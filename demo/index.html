@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Travel Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --giallo: #ffcc00;
+    --nero: #121212;
+    --grigio: #f4f4f4;
+    --bianco: #ffffff;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+    color: var(--nero);
+    scroll-behavior: smooth;
+  }
+  
+  header {
+    width: 100%;
+    background: var(--bianco);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 15px 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 8%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 999;
+  }
+
+  header img {
+    height: 80%;
+    max-width: 50%;
+  }  
+
+  section {
+    min-height: 100vh;
+    padding: 80px 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--bianco);
+    transition: background 0.4s ease;
+  }
+
+  section:nth-child(even) {
+    background: var(--grigio);
+  }
+
+  h1, h2 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 3em;
+    color: var(--giallo);
+    margin-bottom: 0.2em;
+  }
+
+  h2 {
+    font-size: 2em;
+    color: var(--nero);
+    border-left: 6px solid var(--giallo);
+    padding-left: 16px;
+    margin-bottom: 25px;
+  }
+
+  p, ul, td {
+    font-size: 1.2em;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  ul li::before {
+    content: "▸";
+    color: var(--giallo);
+    margin-right: 10px;
+  }
+
+  .btn-nav {
+    display: inline-block;
+    background: var(--giallo);
+    color: var(--nero);
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 40px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+
+  .btn-nav:hover {
+    background: #ffd633;
+    transform: translateY(-2px);
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+  }
+
+  footer {
+    background: var(--nero);
+    color: var(--bianco);
+    text-align: center;
+    padding: 30px;
+    font-size: 1em;
+  }
+  
+  footer-white {
+    color: #12121259;
+    text-align: center;
+    padding: 30px;
+    font-size: 1em;
+  }
+  footer a {
+    color: var(--giallo);
+    text-decoration: none;
+  }
+
+  /* SEZIONE INDICE */
+  #indice {
+    background: var(--nero);
+    color: var(--bianco);
+    text-align: center;
+    justify-content: center;
+  }
+
+  #indice h1 {
+    color: var(--giallo);
+    font-size: 3.4em;
+  }
+
+  .subtitle {
+    font-size: 1.3em;
+    color: #ddd;
+  }
+
+  .grid-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+  }
+
+  .card-index {
+    background: var(--bianco);
+    color: var(--nero);
+    border-radius: 14px;
+    padding: 35px 25px;
+    text-decoration: none;
+    font-size: 1.3em;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+
+  .card-index:hover {
+    background: var(--giallo);
+    color: var(--nero);
+    transform: translateY(-6px);
+  }
+
+  /* TAB REMARKS */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+    font-size: 0.7em;
+  }
+
+  table th, table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+
+  table th {
+    background-color: var(--giallo);
+    color: var(--nero);
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 15px 20px; flex-direction: column; height: auto; }
+    header img { height: 35px; margin: 5px 0; }  
+    section { padding: 60px 5%; }
+    h1 { font-size: 2.4em; }
+    h2 { font-size: 1.7em; }
+    .btn-nav { font-size: 0.7em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://raw.githubusercontent.com/partnersolution/website/refs/heads/main/SferaNET_Logo.jpg" alt="Logo SferaNET">
+  <img src="https://raw.githubusercontent.com/partnersolution/website/refs/heads/main/sferanet-yellow3x.png" alt="Logo Partner Solution">
+</header>
+
+<!-- INDICE -->
+<section id="indice">
+  <h1 style="margin-top: 60px;">Business Travel Demo</h1>
+
+
+  <div class="grid-index">
+    <a href="#panoramica" class="card-index">Panoramica</a>
+    <a href="#clienti" class="card-index">Profilazione Clienti</a>
+    <a href="#vendite" class="card-index">Profilazione Vendite</a>
+    <a href="#remarks" class="card-index">Remarks</a>
+    <a href="#rendicontazione" class="card-index">Rendicontazione</a>
+    <a href="#analisi" class="card-index">Analisi Dati</a>
+    <a href="#sbt" class="card-index">Self Booking Tool</a>
+    <a href="#llm" class="card-index">Motore LLM</a>
+    <!--<a href="#conclusione" class="card-index">🏁 Conclusione</a>-->
+  </div>
+<footer>
+  2025 Partner Solution Srl – Gruppo Dylog | <a target ="_blank" href="https://www.partnersolution.it">www.partnersolution.it</a>
+</footer>  
+</section>
+
+<!-- PANORAMICA -->
+<section id="panoramica">
+  <h2>1. Panoramica Generale</h2>
+  <ul>
+    <li>Gestionale Cloud: modulare, multi-utente, multi-azienda, funzionalità che coprono esigenze da gestione preventivo fino a dichiarazione IVA</li>
+    <li>WebApp integrata con accesso B2B</li>
+    <li>Firma contratto digitale</li>
+    <li>Pay-by-Link</li>
+    <li>API per integrazione bidirezionale</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#clienti" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>  
+</section>
+
+<!-- CLIENTI -->
+<section id="clienti">
+  <h2>2. Profilazione Clienti</h2>
+  <ul>
+    <li>Carte Cliente</li>
+    <li>Centri di costo</li>
+    <li>Contratti fee personalizzati</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#panoramica" class="btn-nav">← Indietro</a>
+    <a href="#vendite" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- VENDITE -->
+<section id="vendite">
+  <h2>3. Profilazione Vendite</h2>
+  <ul>
+    <li><b>Info statiche:</b> carta cliente, centro di costo, matricola, codice reparto, account unit, riferimento progetto, numero ordine</li>
+    <li><b>Info dinamiche:</b> codici statistici, tag</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#clienti" class="btn-nav">← Indietro</a>
+    <a href="#remarks" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- REMARKS -->
+<section id="remarks">
+  <h2>Remarks in fase di emissione</h2>
+  <table>
+    <tr><th>Codice</th><th>Funzione</th><th>Esempio</th></tr>
+    <tr><td>CLT*</td><td>Assegna cliente tramite codice mnemonico</td><td>CLT*12345/</td></tr>
+    <tr><td>/P</td><td>Valorizza la tariffa proposta</td><td>/P1000.20</td></tr>
+    <tr><td>/N</td><td>Imposta centro di costo</td><td>/NCC001/</td></tr>
+    <tr><td>/V</td><td>Motivo rifiuto tariffa</td><td>/VNO POLICY/</td></tr>
+    <tr><td>/NTW</td><td>Codice agenzia network</td><td>/NTWABC/</td></tr>
+    <tr><td>/CCADV</td><td>Pagamento con carta ADV</td><td>/CCADV/</td></tr>
+    <tr><td>COMMESSA:</td><td>Assegna codice commessa</td><td>COMMESSA:ABC001/</td></tr>
+    <tr><td>/DIR</td><td>Valore diritti</td><td>/DIR10.00/</td></tr>
+    <tr><td>/OVER</td><td>Valorizza over diritti</td><td>/OVER5.00/</td></tr>
+    <tr><td>/M</td><td>Mission code</td><td>/M12345/</td></tr>
+    <tr><td>#BGT74T#</td><td>Cattura biglietto come 74ter</td><td>#BGT74T#</td></tr>
+    <tr><td>IGNORAPCC</td><td>Ignora booking agency</td><td>IGNORAPCC</td></tr>
+    <tr><td>/ADV</td><td>Forza attribuzione ADV</td><td>/ADVABC/</td></tr>
+    <tr><td>/U</td><td>Forza attribuzione utente CRS</td><td>/UOPERATORE/</td></tr>
+    <tr><td>/I</td><td>Crea incasso per la pratica</td><td>/I01/</td></tr>
+    <tr><td>/D</td><td>Forza APT di destinazione</td><td>/DLHR/</td></tr>
+    <tr><td>/T</td><td>Valorizza tariffa intera</td><td>/T1000.00/</td></tr>
+  </table>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#vendite" class="btn-nav">← Indietro</a>
+    <a href="#rendicontazione" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- RENDICONTAZIONE -->
+<section id="rendicontazione">
+  <h2>4. Rendicontazione</h2>
+  <ul>
+    <li>Estratti conto cliente</li>
+    <li>AIRPLUS / AMEX EC enrichment</li>
+    <li>Accesso area B2B riservata</li>
+    <li>Riconciliazione automatica BSP</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#remarks" class="btn-nav">← Indietro</a>
+    <a href="#analisi" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- ANALISI -->
+<section id="analisi">
+  <h2>5. Analisi Dati</h2>
+  <ul>
+    <li>Analisi vendite</li>
+    <li>Interrogazione dati personalizzabile</li>
+    <li>Power BI (server Fabric as a service)</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#rendicontazione" class="btn-nav">← Indietro</a>
+    <a href="#sbt" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- SBT -->
+<section id="sbt">
+  <h2>6. Self Booking Tool</h2>
+  <ul>
+    <li>Singoli servizi: volo, hotel, treno, noleggio auto</li>
+    <li>Combinazioni integrate Volo + Hotel o Treno + Hotel</li>
+    <li>Compositore dinamico per itinerari multi-segmento</li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#analisi" class="btn-nav">← Indietro</a>
+    <a href="#llm" class="btn-nav">Avanti →</a>
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- LLM -->
+<section id="llm">
+  <h2>7. Motore LLM Integrabile</h2>
+  <ul>
+    <li>LLM privato e personalizzabile, addestrato su dataset interni</li>
+    <li>Supporto AI per creazione contenuti e interrogazioni dati</li>
+    <li><a target = "_blank" href="https://n8n.partnersolution.it/webhook/a6ae48e3-16dd-404f-a587-d17f90683489/chat">Demo live</a></li>
+  </ul>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#sbt" class="btn-nav">← Indietro</a>
+    <!--<a href="#conclusione" class="btn-nav">Avanti →</a>-->
+  </div>
+<footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white>   
+</section>
+
+<!-- CONCLUSIONE -->
+<!--<section id="conclusione">
+  <h2>🏁 Conclusione</h2>
+  <p style="font-size:1.4em;">
+    <b>SferaNET Business Travel</b> unisce in un’unica piattaforma
+    <b>operatività, contabilità, analisi e integrazione AI</b>, per una gestione realmente
+    <b>end-to-end</b> del Business Travel.
+  </p>
+
+  <div class="nav-container">
+    <a href="#indice" class="btn-nav">↑ Indice</a>
+    <a href="#llm" class="btn-nav">← Indietro</a>
+  </div>
+  <footer-white>
+  2025 Partner Solution Srl – Gruppo Dylog
+</footer-white> 
+</section>-->
+
+<footer>
+  2025 Partner Solution Srl – Gruppo Dylog | <a href="https://www.partnersolution.it">www.partnersolution.it</a>
+</footer>
+
+</body>
+</html>
+
+
+
+
