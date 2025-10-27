@@ -120,7 +120,8 @@
 <body>
 
 <header>
-  <img src="SferaNET_Logo.jpg" alt="Partner Solution Logo">
+  <img src="https://raw.githubusercontent.com/partnersolution/website/refs/heads/main/images/SferaNET_Logo.jpg" alt="Logo SferaNET">
+  <img src="https://raw.githubusercontent.com/partnersolution/website/refs/heads/main/images/sferanet-yellow3x.png" alt="Logo Partner Solution">
   <h1>Landing page di presentazione</h1>
 </header>
 
@@ -129,6 +130,41 @@
 
   <div class="grid" id="presentationList">
     <!-- ESEMPI DI CARD PRESENTAZIONI -->
-    <a href="https://partnersolution.github.io/website/demo/sferanet-business-travel" class="card">
+    <a href="https://partnersolution.github.io/website/demo/" class="card">
       <h3>Business Travel Demo</h3>
-      <p>Presentazione interattiva del modulo
+      <p>Presentazione interattiva del modulo Business Travel con profilazione, rendicontazione e motore AI integrato.</p>
+    </a>
+
+    <a href="https://partnersolution.github.io/website/crm" class="card">
+      <h3>Modulo Pre-Sale</h3>
+      <p>Gestione pipeline e offerte commerciali integrate nel CRM multi-tenant SferaNET.</p>
+    </a>
+
+    <a href="https://partnersolution.github.io/website/demo/chat_ai" class="card">
+      <h3>SferaNET AI</h3>
+      <p>Motore LLM privato per generazione automatica di pratiche, query SQL e insight gestionali.</p>
+    </a>
+  </div>
+</main>
+
+<footer>
+  © 2025 Partner Solution Srl – Gruppo Dylog  
+  | <a href="https://www.partnersolution.it">www.partnersolution.it</a>
+</footer>
+
+<script>
+  // 🔍 Motore di ricerca semplice
+  const searchBox = document.getElementById('searchBox');
+  const cards = document.querySelectorAll('.card');
+
+  searchBox.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      card.style.display = text.includes(query) ? 'block' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
