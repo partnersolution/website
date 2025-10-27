@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing page di presentazione</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --giallo: #ffcc00;
+    --nero: #121212;
+    --grigio: #f5f5f5;
+    --bianco: #ffffff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    color: var(--nero);
+    background: linear-gradient(135deg, #0f0f0f 0%, #232323 60%, #1a1a1a 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 60px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+
+  header img {
+    height: 50px;
+  }
+
+  header h1 {
+    color: var(--giallo);
+    font-size: 2em;
+    font-weight: 600;
+  }
+
+  main {
+    flex: 1;
+    padding: 60px 8%;
+  }
+
+  #searchBox {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 50px;
+    display: block;
+    padding: 14px 20px;
+    font-size: 1.1em;
+    border-radius: 40px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  .card {
+    background: #1e1e1e;
+    border-radius: 14px;
+    padding: 30px 25px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+    background: #2b2b2b;
+  }
+
+  .card h3 {
+    color: var(--giallo);
+    font-size: 1.4em;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    color: #ccc;
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  footer {
+    text-align: center;
+    padding: 25px;
+    color: #ccc;
+    font-size: 0.95em;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  footer a {
+    color: var(--giallo);
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    header { flex-direction: column; gap: 10px; padding: 20px; }
+    header h1 { font-size: 1.6em; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="SferaNET_Logo.jpg" alt="Partner Solution Logo">
+  <h1>Landing page di presentazione</h1>
+</header>
+
+<main>
+  <input type="text" id="searchBox" placeholder="🔍 Cerca una presentazione...">
+
+  <div class="grid" id="presentationList">
+    <!-- ESEMPI DI CARD PRESENTAZIONI -->
+    <a href="https://partnersolution.github.io/website/demo/sferanet-business-travel" class="card">
+      <h3>Business Travel Demo</h3>
+      <p>Presentazione interattiva del modulo
