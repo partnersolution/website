@@ -1,1 +1,1283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Itinerario Turistico – Full Version</title>
+
+    <!-- Leaflet (mappe) -->
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- SortableJS (drag & drop cross-list) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <!-- CSS verrà inserito nel blocco 2 -->
+    <style>
+		/* ============================================================
+	   GLOBAL STYLE
+	   ============================================================ */
+	body {
+		margin: 0;
+		display: flex;
+		height: 100vh;
+		background: #f4f4f4;
+		overflow: hidden;
+		font-family: Nunito, sans-serif;
+	}
+
+
+	/* ============================================================
+	   SIDEBAR (catalogo servizi)
+	   ============================================================ */
+	#sidebarWrapper {
+		display: flex;
+		flex-direction: column;
+		width: 360px;
+		min-width: 360px;
+		max-width: 360px;
+		background: white;
+		border-right: 1px solid #ccc;
+	}
+
+	#sidebar {
+		flex: 1;
+		padding: 20px;
+		overflow-y: auto;
+	}
+
+	.filter-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.toggle-btn {
+		background: #0077ff;
+		color: white;
+		border: none;
+		padding: 6px 10px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	/* Collassa l’intera sezione filtri */
+	#filtersArea.collapsed {
+		display: none;
+	}
+
+	label {
+		font-weight: 600;
+		margin-top: 10px;
+		display: block;
+	}
+
+	select,
+	input {
+		width: 100%;
+		padding: 8px;
+		margin-top: 6px;
+		border-radius: 6px;
+		border: 1px solid #ccc;
+	}
+
+	/* Righe con checkbox */
+	.checkbox-row {
+		margin-top: 10px;
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	/* Rende invisibili i due filtri disabilitati */
+	#showPurchased,
+	label[for="showPurchased"],
+	#showInserted,
+	label[for="showInserted"] {
+		display: none !important;
+	}
+
+
+	/* ============================================================
+	   RISULTATI DEL CATALOGO
+	   ============================================================ */
+	.result-card {
+		position: relative;
+		background: #fff;
+		padding: 8px;
+		margin-bottom: 12px;
+		border-radius: 6px;
+		cursor: grab;
+		display: flex;
+		gap: 10px;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+	}
+
+	/* Ribbon (usato per "✔ Inserito") */
+	.ribbon {
+		position: absolute;
+		top: -6px;
+		right: -6px;
+		padding: 4px 8px;
+		font-size: 14px;
+		font-weight: bold;
+		border-radius: 6px;
+		background: #ff7a00;
+		color: white;
+		transform: rotate(10deg);
+	}
+
+	.icon {
+		width: 28px;
+		height: 28px;
+	}
+
+
+	/* ============================================================
+	   ITINERARY AREA
+	   ============================================================ */
+	#itineraryContainer {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	#itinerary {
+		flex: 1;
+		padding: 20px;
+		overflow-y: auto;
+	}
+
+	.day-box {
+		background: #fff;
+		padding: 12px;
+		border-radius: 6px;
+		margin-bottom: 15px;
+		box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+	}
+
+	.drop-area {
+		min-height: 60px;
+		border: 2px dashed #ccc;
+		padding: 6px;
+		border-radius: 6px;
+		background: #fafafa;
+	}
+
+	.day-item {
+		background: #fff;
+		border: 1px solid #ccc;
+		padding: 6px;
+		border-radius: 4px;
+		margin-bottom: 6px;
+	}
+
+	.day-item input,
+	.day-item textarea {
+		width: 100%;
+		padding: 4px;
+		margin-bottom: 4px;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+	}
+
+	/* Pulsante rimozione da un giorno dell’itinerario */
+	.day-item button {
+		background: #e74c3c;
+		color: white;
+		border: none;
+		padding: 4px 6px;
+		border-radius: 4px;
+		cursor: pointer;
+		margin-top: 4px;
+	}
+
+
+	/* ============================================================
+	   MODALI GENERALI (Preview, Mappa catalogo, Mappa itinerario)
+	   ============================================================ */
+	#mapModal,
+	#itineraryMapModal,
+	#previewModal {
+		position: fixed;
+		inset: 0;
+		display: none;               /* Nascoste finché non servono */
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+		z-index: 9999;
+		background: rgba(0,0,0,0.55); /* Overlay */
+	}
+
+	/* Contenitore principale dei modali */
+	.mapModalContent {
+		background: white;
+		width: 80%;
+		height: 80%;
+		border-radius: 10px;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	/* Card nella colonna risultati mappa */
+	.modal-card {
+		background: #fff;
+		padding: 10px;
+		margin-bottom: 10px;
+		border-radius: 6px;
+		border: 1px solid #ccc;
+		position: relative;
+	}
+
+
+	/* ============================================================
+	   RESPONSIVE / UTILITY (eventualmente espandibili)
+	   ============================================================ */
+	@media (max-width: 900px) {
+		/* Sidebar più stretta su tablet */
+		#sidebarWrapper {
+			width: 300px;
+			min-width: 300px;
+		}
+	}
+
+	@media (max-width: 700px) {
+		/* Nasconde sidebar su mobile */
+		#sidebarWrapper {
+			display: none;
+		}
+	}
+
+    </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     SVG ICONS (risorse usate nel catalogo e nelle liste)
+     ============================================================ -->
+<svg style="display:none;">
+    <symbol id="icon-place" viewBox="0 0 24 24">
+        <path fill="#007BFF" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+    </symbol>
+
+    <symbol id="icon-hotel" viewBox="0 0 24 24">
+        <path fill="#8E44AD" d="M7 14h10V5h2v14h-2v-2H7v2H5V5h2z"/>
+    </symbol>
+
+    <symbol id="icon-activity" viewBox="0 0 24 24">
+        <path fill="#27AE60" d="M20 12H4v3h16z"/>
+    </symbol>
+
+    <symbol id="icon-transport" viewBox="0 0 24 24">
+        <path fill="#E67E22" d="M21 16l-8-5V3l-3 0v8l-8 5v2l8-2v6l-2 1v1l3-1 3 1v-1l-2-1v-6l8 2z"/>
+    </symbol>
+</svg>
+
+
+
+<!-- ============================================================
+     SIDEBAR SINISTRA (Catalogo servizi)
+     ============================================================ -->
+<div id="sidebarWrapper">
+
+    <div id="sidebar">
+
+        <!-- Header con pulsante per collassare i filtri -->
+        <div class="filter-header">
+            <h2>📚 Seleziona dal catalogo</h2>
+            <button id="toggleFiltersBtn" class="toggle-btn">⬆️</button>
+        </div>
+
+        <!-- Sezione filtri catalogo -->
+        <div id="filtersArea">
+
+            <label>Tipologia</label>
+            <select id="typeSelector">
+                <option value="all">Tutti</option>
+                <option value="places">Luoghi</option>
+                <option value="structures">Strutture</option>
+                <option value="activities">Attività</option>
+                <option value="transport">Trasporti</option>
+            </select>
+
+            <label>Titolo</label>
+            <input type="text" id="searchInput">
+
+            <label>Destinazione</label>
+            <input type="text" id="destinationInput">
+
+            <label>Fornitore</label>
+            <input type="text" id="supplierInput">
+
+            <!-- Filtri rimossi: restano nascosti -->
+            <div class="checkbox-row">
+                <input type="checkbox" id="showPurchased">
+                <label for="showPurchased">Solo servizi già in preventivo</label>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="showInserted">
+                <label for="showInserted">Mostra già inseriti</label>
+            </div>
+
+            <!-- Pulsanti ricerca -->
+            <button id="searchBtn"
+                style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:6px; margin-top:15px;">
+                🔎 Cerca
+            </button>
+
+            <button id="mapSearchBtn"
+                style="width:100%; padding:10px; margin-top:10px; background:#0077ff; color:white; border:none; border-radius:6px;">
+                🗺️ Cerca sulla mappa
+            </button>
+        </div>
+
+        <h3>Risultati</h3>
+        <div id="results"></div>
+    </div>
+</div>
+
+
+
+<!-- ============================================================
+     AREA ITINERARIO (parte destra della UI)
+     ============================================================ -->
+<div id="itineraryContainer">
+
+    <!-- Configurazione generale itinerario -->
+    <div style="display:flex; gap:10px; padding:15px; background:#fff; border-bottom:1px solid #ddd;">
+
+        <div>
+            <label style="font-weight:600;">Data inizio</label>
+            <input type="date" id="startDate" style="padding:5px; border-radius:6px; border:1px solid #ccc;">
+        </div>
+
+        <div>
+            <label style="font-weight:600;">Giorni</label>
+            <input type="number" id="numDays" value="10" min="1" max="60"
+                style="padding:5px; width:80px; border-radius:6px; border:1px solid #ccc;">
+        </div>
+
+        <button id="applyItinerarySettings"
+            style="height:40px; align-self:flex-end; background:#0077ff; color:white; border:none; border-radius:6px; cursor:pointer; padding:0 14px;">
+            Applica
+        </button>
+    </div>
+
+
+    <!-- Pulsanti utili (mappa + anteprima) -->
+    <div style="display:flex; gap:10px; padding:15px;">
+
+        <button id="showItineraryMapBtn" style="flex:1;">
+            🗺️ Mostra itinerario in mappa
+        </button>
+
+        <button id="previewBtn"
+            style="flex:1; background:#f39c12; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-size:15px;">
+            📄 Anteprima
+        </button>
+    </div>
+
+    <!-- Contenitore giorni -->
+    <div id="itinerary"></div>
+</div>
+
+
+
+<!-- ============================================================
+     MODALE ANTEPRIMA PREVENTIVO
+     ============================================================ -->
+<div id="previewModal">
+    <div style="background:white; width:70%; max-height:80vh; overflow-y:auto; border-radius:10px; padding:20px;">
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <h2>📄 Anteprima scheda preventivo</h2>
+            <button onclick="closePreview()"
+                style="background:red;color:white;border:none;padding:6px 10px;border-radius:6px;">✕</button>
+        </div>
+
+        <!-- Render dinamico contenuto -->
+        <div id="previewContent"></div>
+    </div>
+</div>
+
+
+
+<!-- ============================================================
+     MODALE "CERCA SULLA MAPPA" (catalogo)
+     ============================================================ -->
+<div id="mapModal">
+    <div class="mapModalContent">
+
+        <!-- Header -->
+        <div style="padding:15px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">
+            <h2>Cerca sulla mappa</h2>
+            <button onclick="closeMapModal()">✕</button>
+        </div>
+
+        <!-- Filtri mappa -->
+        <div style="padding:15px; display:flex; flex-wrap:wrap; gap:10px;">
+            <select id="mapTypeSelector">
+                <option value="places">Luoghi</option>
+                <option value="structures">Strutture</option>
+                <option value="activities">Attività</option>
+                <option value="transport">Trasporti</option>
+            </select>
+
+            <input id="mapSearchInput" placeholder="Titolo">
+            <input id="mapDestinationInput" placeholder="Destinazione">
+            <input id="mapSupplierInput" placeholder="Fornitore">
+
+            <label>
+                <input type="checkbox" id="mapShowPurchased"> Servizi già in preventivo
+            </label>
+
+            <button onclick="renderMapResults()"
+                style="background:#0077ff;color:white;border:none;padding:10px 15px;border-radius:6px;">
+                🔎
+            </button>
+        </div>
+
+        <!-- Mappa + lista risultati -->
+        <div style="flex:1; display:flex; overflow:hidden;">
+
+            <!-- Mappa -->
+            <div id="modalMap" style="flex:2;"></div>
+
+            <!-- Lista -->
+            <div id="mapResultsList"
+                style="flex:1; padding:15px; overflow-y:auto; border-left:1px solid #ddd;">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ============================================================
+     MODALE MAPPA ITINERARIO (solo attività & strutture)
+     ============================================================ -->
+<div id="itineraryMapModal">
+
+    <div class="mapModalContent" style="flex-direction:row; display:flex;">
+
+        <!-- Sidebar filtri giorni e tipologia -->
+        <div style="width:260px; background:#fafafa; border-right:1px solid #ddd; padding:15px; overflow-y:auto;">
+            <h3>Giorni itinerario</h3>
+
+            <!-- Lista giorni generata via JS -->
+            <div id="dayFilterList" style="margin-bottom:20px;"></div>
+
+            <h3>Filtri</h3>
+
+            <label>
+                <input type="radio" name="typeFilter" value="all" checked>
+                Mostra attività e strutture
+            </label><br>
+
+            <label>
+                <input type="radio" name="typeFilter" value="activities">
+                Mostra solo attività
+            </label><br>
+
+            <label>
+                <input type="radio" name="typeFilter" value="structures">
+                Mostra solo strutture
+            </label><br>
+
+            <button onclick="closeItineraryMapModal()"
+                style="margin-top:20px; background:#e74c3c; color:white; padding:8px 12px; border:none; border-radius:6px; width:100%;">
+                Chiudi
+            </button>
+        </div>
+
+        <!-- Sezione mappa -->
+        <div style="flex:1; display:flex; flex-direction:column;">
+            <div style="padding:15px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">
+                <h2>Mappa dell'itinerario</h2>
+            </div>
+
+            <div id="itineraryMap" style="flex:1;"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ============================================================
+     JAVASCRIPT (inserito nei prossimi blocchi)
+     ============================================================ -->
+<script>
+/* BLOCCO 3 COMPLETO COMMENTATO */
+
+/* ============================================================
+   CATALOGO DATI (places, activities, structures, transport)
+   ============================================================ */
+/*
+   Ogni voce contiene:
+   - id: identificativo univoco
+   - title: titolo mostrato nel catalogo
+   - desc: descrizione sintetica
+   - destination: destinazione associata
+   - supplier: fornitore del servizio
+   - lat/lon: coordinate geografiche per la mappa
+*/
+
+const data = {
+
+    /* ---------------------------
+       LUOGHI (places)
+       --------------------------- */
+    places: [
+        { id:"p1", title:"New York", desc:"Metropoli iconica.", destination:"New York", supplier:"-", lat:40.7128, lon:-74.0060 },
+        { id:"p2", title:"Statua della Libertà", desc:"Simbolo USA.", destination:"New York", supplier:"-", lat:40.6892, lon:-74.0445 },
+        { id:"p3", title:"Central Park", desc:"Il parco urbano più famoso del mondo.", destination:"New York", supplier:"-", lat:40.7851, lon:-73.9683 },
+        { id:"p4", title:"Tokyo Tower", desc:"Torre panoramica simbolo di Tokyo.", destination:"Tokyo", supplier:"-", lat:35.6586, lon:139.7454 },
+        { id:"p5", title:"Shinjuku", desc:"Quartiere moderno di Tokyo.", destination:"Tokyo", supplier:"-", lat:35.6938, lon:139.7034 },
+        { id:"p6", title:"Kyoto Fushimi Inari", desc:"Santuario con migliaia di torii rossi.", destination:"Kyoto", supplier:"-", lat:34.9671, lon:135.7727 },
+        { id:"p7", title:"Shibuya Crossing", desc:"L'incrocio più trafficato del mondo.", destination:"Tokyo", supplier:"-", lat:35.6594, lon:139.7003 },
+        { id:"p8", title:"Londra Westminster", desc:"Zona monumentale di Londra.", destination:"Londra", supplier:"-", lat:51.4995, lon:-0.1248 },
+        { id:"p9", title:"Tower Bridge", desc:"Ponte simbolo di Londra.", destination:"Londra", supplier:"-", lat:51.5055, lon:-0.0754 },
+        { id:"p10", title:"Tour Eiffel", desc:"Simbolo di Parigi.", destination:"Parigi", supplier:"-", lat:48.8584, lon:2.2945 },
+        { id:"p11", title:"Louvre", desc:"Il museo più famoso del mondo.", destination:"Parigi", supplier:"-", lat:48.8606, lon:2.3376 },
+        { id:"p12", title:"Burj Khalifa", desc:"Il grattacielo più alto del mondo.", destination:"Dubai", supplier:"-", lat:25.1972, lon:55.2744 },
+        { id:"p13", title:"Dubai Marina", desc:"Area futuristica sul mare.", destination:"Dubai", supplier:"-", lat:25.0800, lon:55.1400 },
+        { id:"p14", title:"Sydney Opera House", desc:"Iconico teatro sul mare.", destination:"Sydney", supplier:"-", lat:-33.8568, lon:151.2153 },
+        { id:"p15", title:"Bondi Beach", desc:"La spiaggia più famosa di Sydney.", destination:"Sydney", supplier:"-", lat:-33.8915, lon:151.2767 },
+        { id:"p16", title:"Rio de Janeiro – Cristo Redentore", desc:"Una delle 7 meraviglie del mondo.", destination:"Rio", supplier:"-", lat:-22.9519, lon:-43.2105 },
+        { id:"p17", title:"Reykjavik Blue Lagoon", desc:"Sorgente termale islandese.", destination:"Reykjavik", supplier:"-", lat:63.8804, lon:-22.4495 },
+        { id:"p18", title:"Marrakech Medina", desc:"Mercati tradizionali marocchini.", destination:"Marrakech", supplier:"-", lat:31.6295, lon:-7.9811 },
+        { id:"p19", title:"Roma Colosseo", desc:"Simbolo dell'antica Roma.", destination:"Roma", supplier:"-", lat:41.8902, lon:12.4922 },
+        { id:"p20", title:"Firenze Duomo", desc:"Capolavoro rinascimentale.", destination:"Firenze", supplier:"-", lat:43.7731, lon:11.2560 }
+    ],
+
+    /* ---------------------------
+       ATTIVITÀ (activities)
+       --------------------------- */
+    activities: [
+        { id:"a1", title:"Tour della Grande Mela", desc:"Tour guidato completo di Manhattan.", destination:"New York", supplier:"NYC Tours", lat:40.758, lon:-73.985 },
+        { id:"a2", title:"Ground Zero Tour", desc:"Visita al memoriale 9/11.", destination:"New York", supplier:"Liberty Excursions", lat:40.7115, lon:-74.0134 },
+        { id:"a3", title:"Crociera Hudson", desc:"Mini crociera panoramica.", destination:"New York", supplier:"NY Cruises", lat:40.705, lon:-74.013 },
+        { id:"a4", title:"Cooking Class Ramen", desc:"Lezione di cucina tradizionale.", destination:"Tokyo", supplier:"Tokyo Food Lab", lat:35.6895, lon:139.6917 },
+        { id:"a5", title:"Tour Geisha District", desc:"Passeggiata nel quartiere Gion.", destination:"Kyoto", supplier:"Japan Culture", lat:35.0023, lon:135.7788 },
+        { id:"a6", title:"Safari nel deserto", desc:"Escursione in 4x4 e cena beduina.", destination:"Dubai", supplier:"Desert Safari UAE", lat:25.2048, lon:55.2708 },
+        { id:"a7", title:"Opera di Sydney Tour", desc:"Visita guidata interna.", destination:"Sydney", supplier:"Sydney Opera House", lat:-33.8568, lon:151.2153 },
+        { id:"a8", title:"Lezione Surf Bondi", desc:"Corso base con istruttore.", destination:"Sydney", supplier:"Bondi Surf School", lat:-33.8915, lon:151.2767 },
+        { id:"a9", title:"Tour favela Rocinha", desc:"Esperienza sociale guidata.", destination:"Rio", supplier:"Rio Local Tours", lat:-22.9833, lon:-43.2167 },
+        { id:"a10", title:"Escursione ghiacciai", desc:"Tour nella natura islandese.", destination:"Reykjavik", supplier:"Arctic Adventures", lat:64.1265, lon:-21.8174 },
+        { id:"a11", title:"Hammam tradizionale", desc:"Percorso benessere arabo.", destination:"Marrakech", supplier:"Spa Medina", lat:31.63, lon:-7.98 },
+        { id:"a12", title:"Tour Vaticano", desc:"Musei Vaticani + Cappella Sistina.", destination:"Roma", supplier:"Roma Guide", lat:41.9022, lon:12.4539 },
+        { id:"a13", title:"Times Square", desc:"Times Square.", destination:"Roma", supplier:"New York", lat:41.9022, lon:12.4539 }
+    ],
+
+    /* ---------------------------
+       STRUTTURE (hotels & lodges)
+       --------------------------- */
+    structures: [
+        { id:"s1", title:"Hotel Crystal NYC", desc:"Hotel moderno nel cuore di Manhattan.", destination:"New York", supplier:"Crystal Hotels", lat:40.754, lon:-73.984 },
+        { id:"s2", title:"Hilton Times Square", desc:"Hotel premium.", destination:"New York", supplier:"Hilton", lat:40.761, lon:-73.981 },
+        { id:"s3", title:"Tokyo Ryokan Sakura", desc:"Alloggio tradizionale giapponese.", destination:"Tokyo", supplier:"Ryokan Group", lat:35.6895, lon:139.692 },
+        { id:"s4", title:"Kyoto Riverside Hotel", desc:"Boutique hotel romantico.", destination:"Kyoto", supplier:"KyoStay", lat:35.0116, lon:135.7681 },
+        { id:"s5", title:"Dubai Palm Resort", desc:"Resort 5★ su The Palm.", destination:"Dubai", supplier:"Palm Resorts", lat:25.112, lon:55.138 },
+        { id:"s6", title:"Sydney Harbour Hotel", desc:"Camere vista Opera House.", destination:"Sydney", supplier:"Harbour Hotels", lat:-33.857, lon:151.212 },
+        { id:"s7", title:"Rio Copacabana Resort", desc:"Resort fronte mare.", destination:"Rio", supplier:"Tropical Resorts", lat:-22.9711, lon:-43.1822 },
+        { id:"s8", title:"Iceland Glacier Lodge", desc:"Lodge nordico nel ghiaccio.", destination:"Reykjavik", supplier:"Nordic Stay", lat:64.13, lon:-21.82 },
+        { id:"s9", title:"Riad Marrakech Rose", desc:"Riad tradizionale nella Medina.", destination:"Marrakech", supplier:"Riad Collection", lat:31.63, lon:-7.99 },
+        { id:"s10", title:"Roma Boutique Hotel", desc:"Elegante boutique hotel.", destination:"Roma", supplier:"Roma Hotels", lat:41.90, lon:12.50 }
+    ],
+
+    /* ---------------------------
+       TRASPORTI
+       --------------------------- */
+    transport: [
+        { id:"t1", title:"Volo FCO-JFK", desc:"Volo diretto Roma → NYC.", destination:"New York", supplier:"Alitalia", lat:40.641, lon:-73.778 },
+        { id:"t2", title:"Volo JFK-FCO", desc:"Ritorno NYC → Roma.", destination:"Roma", supplier:"Alitalia", lat:41.80, lon:12.2389 },
+        { id:"t3", title:"Transfer JFK-Manhattan", desc:"Trasferimento privato.", destination:"New York", supplier:"AirportConnect", lat:40.641, lon:-73.778 },
+        { id:"t4", title:"Shinkansen Tokyo-Kyoto", desc:"Treno alta velocità.", destination:"Tokyo", supplier:"JR Line", lat:35.6812, lon:139.7671 },
+        { id:"t5", title:"Transfer Dubai Hotel", desc:"Trasferimento aeroporto → hotel.", destination:"Dubai", supplier:"DXB Transport", lat:25.2532, lon:55.3657 },
+        { id:"t6", title:"Volo SYD-RIO", desc:"Sydney → Rio (1 stop).", destination:"Rio", supplier:"Qantas", lat:-33.9399, lon:151.1753 },
+        { id:"t7", title:"Bus Reykjavik Tour", desc:"Trasporto per escursioni.", destination:"Reykjavik", supplier:"Arctic Bus", lat:64.13, lon:-21.82 },
+        { id:"t8", title:"Taxi Roma Aeroporto", desc:"Taxi ufficiale Roma FCO.", destination:"Roma", supplier:"Taxi Roma", lat:41.80, lon:12.2389 },
+        { id:"t9", title:"Volo CDG-DXB", desc:"Parigi → Dubai.", destination:"Dubai", supplier:"Emirates", lat:48.8566, lon:2.3522 },
+        { id:"t10", title:"Ferry Sydney Harbour", desc:"Traghetto panoramico.", destination:"Sydney", supplier:"Harbour Ferry", lat:-33.852, lon:151.211 }
+    ]
+};
+
+
+
+/* ============================================================
+   MARCATURA ELEMENTI "già acquistati"
+   (usata per filtri e icone)
+   ============================================================ */
+function markRandomBought() {
+    ["structures", "activities", "transport"].forEach(sec => {
+        let arr = data[sec];
+        for (let i = 0; i < Math.ceil(arr.length / 2); i++) {
+            arr[Math.floor(Math.random() * arr.length)].bought = true;
+        }
+    });
+}
+markRandomBought();
+
+
+
+/* ============================================================
+   UTILITY: icone e ribbon "✔ inserito"
+   ============================================================ */
+
+/** Restituisce l'icona SVG corretta */
+function icon(type) {
+    return `<svg class='icon'><use href='#icon-${type === "places"
+        ? "place"
+        : type === "structures"
+        ? "hotel"
+        : type === "activities"
+        ? "activity"
+        : "transport"}'/></svg>`;
+}
+
+/** Ribbon mostrato quando un servizio è già nell’itinerario */
+function ribbon(item) {
+    if (insertedTitles.has(item.title)) {
+        return `<div class="ribbon" style="background:#2ecc71; transform:rotate(0deg);">
+                    ✔ Inserito
+                </div>`;
+    }
+    return "";
+}
+
+
+
+/* ============================================================
+   FUNZIONE FILTRO CATALOGO
+   ============================================================ */
+/*
+   Filtra per:
+   - testo nel titolo o nella descrizione
+   - destinazione
+   - fornitore
+   - eventuale filtro "purchased"
+*/
+
+function filter(items, t, d, s, p) {
+    return items.filter(x =>
+        (
+            x.title.toLowerCase().includes(t) ||
+            x.desc.toLowerCase().includes(t)  // ricerca ampliata
+        )
+        && x.destination.toLowerCase().includes(d)
+        && x.supplier.toLowerCase().includes(s)
+        && (!p || x.bought)
+    );
+}
+
+
+
+/* ============================================================
+   RENDER CATALOGO
+   ============================================================ */
+searchBtn.onclick = render;
+
+function render() {
+
+    const type = typeSelector.value;
+    const t = searchInput.value.toLowerCase();
+    const d = destinationInput.value.toLowerCase();
+    const s = supplierInput.value.toLowerCase();
+    const p = showPurchased.checked;
+    const onlyInserted = document.getElementById("showInserted").checked;
+
+    results.innerHTML = "";
+
+    // Se "Tutti" → unisce tutti i dataset
+    let itemsToSearch = [];
+
+    if (type === "all") {
+        itemsToSearch = [
+            ...data.places,
+            ...data.structures,
+            ...data.activities,
+            ...data.transport
+        ];
+    } else {
+        itemsToSearch = data[type];
+    }
+
+    // Esegui il filtro e genera risultati
+    filter(itemsToSearch, t, d, s, p)
+        .filter(item => !onlyInserted || insertedTitles.has(item.title))
+        .forEach(item => {
+
+            let el = document.createElement("div");
+            let typeOfItem = Object.keys(data).find(k => data[k].includes(item));
+
+            el.className = "result-card";
+            el.draggable = true;
+
+            el.innerHTML = `
+                ${ribbon(item)}
+                ${icon(typeOfItem)}
+                <div>
+                    <strong>${item.title}</strong><br>
+                    ${item.desc}<br>
+                    <small>${item.destination} • ${item.supplier}</small>
+                </div>
+            `;
+
+            // Drag & drop verso l'itinerario
+            el.addEventListener("dragstart", e => {
+                e.dataTransfer.setData("fromCatalog", "true");
+                e.dataTransfer.setData("title", item.title);
+                e.dataTransfer.setData("desc", item.desc);
+            });
+
+            results.appendChild(el);
+        });
+}
+
+
+
+/* ============================================================
+   COSTRUZIONE ITINERARIO (lista giorni)
+   ============================================================ */
+
+function buildItinerary() {
+
+    itinerary.innerHTML = "";
+
+    // Se l'utente non seleziona data → usa quella odierna
+    let start = document.getElementById("startDate").value
+        ? new Date(document.getElementById("startDate").value)
+        : new Date();
+
+    let days = parseInt(document.getElementById("numDays").value) || 10;
+
+    for (let i = 1; i <= days; i++) {
+
+        // Calcolo data giorno i
+        let d = new Date(start);
+        d.setDate(start.getDate() + (i - 1));
+
+        // Struttura contenitore del giorno
+        let box = document.createElement("div");
+        box.className = "day-box";
+
+        box.innerHTML = `
+            <div class='day-title'>
+                Giorno ${i} – ${d.toISOString().split("T")[0]}
+                <span class="day-icons" id="day-icons-${i}" style="margin-left:10px;"></span>
+            </div>
+
+            <div class='drop-area' id='day-${i}'></div>
+        `;
+
+        itinerary.appendChild(box);
+
+        let drop = box.querySelector(".drop-area");
+
+        // Permette il drop
+        drop.addEventListener("dragover", e => e.preventDefault());
+
+        /* Gestione drop da catalogo */
+        drop.addEventListener("drop", e => {
+            e.preventDefault();
+
+            if (e.dataTransfer.getData("fromCatalog") === "true") {
+
+                let t = e.dataTransfer.getData("title");
+                let desc = e.dataTransfer.getData("desc");
+
+                let di = document.createElement("div");
+                di.className = "day-item";
+
+                di.innerHTML = `
+                    <input value='${t}'>
+                    <textarea rows='2'>${desc}</textarea>
+                    <button class="remove-btn">✕</button>
+                `;
+
+                drop.appendChild(di);
+
+                // Registra come inserito
+                insertedTitles.add(t);
+
+                // Rimozione
+                di.querySelector(".remove-btn").onclick = () => {
+                    di.remove();
+                    removeFromItinerary(di, t);
+                    updateDayIcons(i);
+                };
+
+                updateDayIcons(i);
+                render();
+            }
+        });
+
+        // Drag & drop tra giorni diversi
+        Sortable.create(drop, {
+            animation: 150,
+            group: "itinerary",
+            onSort: () => updateDayIcons(i)
+        });
+
+        updateDayIcons(i);
+    }
+}
+
+/* Pulsante "Applica" rigenera l'itinerario */
+applyItinerarySettings.onclick = () => buildItinerary();
+
+
+/* ============================================================
+   GESTIONE ELEMENTI INSERITI / RIMOSSI
+   ============================================================ */
+
+// Insieme che contiene titoli dei servizi già aggiunti
+let insertedTitles = new Set();
+
+/** Rimuove un elemento dall'itinerario verificando se presente altrove */
+function removeFromItinerary(box, title) {
+
+    // Rimozione DOM
+    box.remove();
+
+    // Verifica se il titolo appare ancora in qualche altro giorno
+    let stillPresent = false;
+
+    for (let d = 1; d <= 10; d++) {
+        document.querySelectorAll(`#day-${d} .day-item input`).forEach(inp => {
+            if (inp.value === title) stillPresent = true;
+        });
+    }
+
+    // Se non appare → rimuovi dal set
+    if (!stillPresent) {
+        insertedTitles.delete(title);
+    }
+
+    render(); // aggiorna catalogo (per ribbon)
+}
+
+
+/* ============================================================
+   ICONE SINTETICHE NON OBBLIGATORIE (attività/strutture/...)
+   ============================================================ */
+
+/*
+   Per ogni giorno mostra:
+   🎯 se include attività
+   🏨 se include strutture
+   🚕 se include trasporti
+   📍 se include luoghi
+
+   Non impone obblighi, è solo indicativo.
+*/
+
+function updateDayIcons(day) {
+
+    let items = document.querySelectorAll(`#day-${day} .day-item`);
+
+    let hasActivity = false;
+    let hasStructure = false;
+    let hasTransport = false;
+    let hasPlace = false;
+
+    items.forEach(el => {
+        let title = el.querySelector("input").value;
+        let type = Object.keys(data).find(k => data[k].some(x => x.title === title));
+
+        if (type === "activities") hasActivity = true;
+        if (type === "structures") hasStructure = true;
+        if (type === "transport") hasTransport = true;
+        if (type === "places") hasPlace = true;
+    });
+
+    let area = document.getElementById(`day-icons-${day}`);
+
+    area.innerHTML = `
+        ${hasActivity ? "🎯" : ""}
+        ${hasStructure ? "🏨" : ""}
+        ${hasTransport ? "🚕" : ""}
+        ${hasPlace ? "📍" : ""}
+    `;
+}
+
+/* BLOCCO 4 OSPITERANNO LO SCRIPT COMPLETO COMMENTATO */
+/* ============================================================
+   MODALE "CERCA SULLA MAPPA" (catalogo)
+   ============================================================ */
+
+let modalMap;
+let mapMarkers = [];
+
+/* Apertura modale mappa per cercare servizi */
+mapSearchBtn.onclick = () => {
+
+    mapModal.style.display = "flex";
+
+    setTimeout(() => {
+        // Inizializzazione mappa solo la prima volta
+        if (!modalMap) {
+            modalMap = L.map("modalMap").setView([40.7128, -74.0060], 12);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+                .addTo(modalMap);
+        }
+
+        modalMap.invalidateSize();
+        renderMapResults();
+    }, 150);
+};
+
+/* Chiusura modale mappa */
+function closeMapModal() {
+    mapModal.style.display = "none";
+}
+
+
+/* ============================================================
+   ICON SET PER LA MAPPA
+   ============================================================ */
+
+const pins = {
+    places: L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    }),
+
+    structures: L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    }),
+
+    activities: L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    }),
+
+    transport: L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    }),
+
+    purchased: L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    })
+};
+
+
+/* ============================================================
+   RENDER RISULTATI NELLA MAPPA CATALOGO
+   ============================================================ */
+
+function renderMapResults() {
+
+    const type = mapTypeSelector.value;
+    const t = mapSearchInput.value.toLowerCase();
+    const d = mapDestinationInput.value.toLowerCase();
+    const s = mapSupplierInput.value.toLowerCase();
+    const p = mapShowPurchased.checked;
+
+    mapResultsList.innerHTML = "";
+
+    // Rimuovi vecchi marker
+    mapMarkers.forEach(m => modalMap.removeLayer(m));
+    mapMarkers = [];
+
+    // Filtra dataset selezionato
+    filter(data[type], t, d, s, p).forEach(item => {
+
+        /* --- COSTRUZIONE CARD LATERALE --- */
+        let c = document.createElement("div");
+        c.className = "modal-card";
+
+        c.innerHTML = `
+            ${ribbon(item)}
+            <strong>${item.title}</strong><br>
+            ${item.desc}<br>
+            <small>${item.destination} • ${item.supplier}</small>
+            <br><br>
+
+			<label>Giorno:</label>
+			<select id="daySelect-${item.id}">
+				${(() => {
+					// Conta i giorni reali presenti nell’itinerario
+					const dayBoxes = document.querySelectorAll(".day-box");
+					const totalDays = dayBoxes.length;
+
+					if (totalDays === 0) {
+						// Caso: itinerario non ancora creato
+						return `<option value="">Nessun giorno disponibile</option>`;
+					}
+
+					return Array.from({ length: totalDays }, (_, i) =>
+						`<option value="${i + 1}">Giorno ${i + 1}</option>`
+					).join("");
+				})()}
+			</select>
+
+
+            <button onclick='addFromMap("${item.id}")'
+                style="margin-top:6px; width:100%; padding:6px;
+                       background:#28a745; color:white; border:none; border-radius:6px;">
+                ➕ Aggiungi
+            </button>
+        `;
+
+        mapResultsList.appendChild(c);
+
+        /* --- AGGIUNTA PIN SULLA MAPPA --- */
+        let ic = pins[type];
+        if (item.bought && type !== "places") ic = pins.purchased;
+
+        let mk = L.marker([item.lat, item.lon], { icon: ic }).addTo(modalMap);
+        mk.bindPopup(`<b>${item.title}</b><br>${item.desc}`);
+
+        mapMarkers.push(mk);
+    });
+}
+
+
+/* ============================================================
+   AGGIUNGI ALL’ITINERARIO DALLA MAPPA
+   ============================================================ */
+
+function addFromMap(id) {
+
+    let g = document.getElementById(`daySelect-${id}`).value;
+    let drop = document.getElementById(`day-${g}`);
+
+    let item = Object.values(data).flat().find(x => x.id === id);
+
+    let el = document.createElement("div");
+    el.className = "day-item";
+
+    el.innerHTML = `
+        <input value='${item.title}'>
+        <textarea rows='2'>${item.desc}</textarea>
+        <button class="remove-btn">✕</button>
+    `;
+
+    drop.appendChild(el);
+
+    // Segna come inserito
+    insertedTitles.add(item.title);
+
+    // Rimozione coerente
+    el.querySelector(".remove-btn").onclick = () => {
+        el.remove();
+        removeFromItinerary(el, item.title);
+        updateDayIcons(g);
+    };
+
+    updateDayIcons(g);
+    render(); // Aggiorna catalogo (per ribbon ✔)
+}
+
+
+/* ============================================================
+   MAPPA ITINERARIO (solo attività e strutture)
+   ============================================================ */
+
+let itineraryMap;
+let itineraryMarkers = [];
+
+// Giorno attualmente visualizzato nella mappa
+let selectedDay = 1;
+
+/* Apertura modale "Mappa itinerario" */
+showItineraryMapBtn.onclick = () => {
+
+    itineraryMapModal.style.display = "flex";
+
+    if (!itineraryMap) {
+        itineraryMap = L.map("itineraryMap").setView([40.7128, -74.0060], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+            .addTo(itineraryMap);
+    }
+
+    buildDaySidebar();
+    renderItineraryPins();
+};
+
+/* Chiusura modale mappa itinerario */
+function closeItineraryMapModal() {
+    itineraryMapModal.style.display = "none";
+}
+
+
+/* ============================================================
+   RENDER PIN ITINERARIO
+   ============================================================ */
+
+function renderItineraryPins() {
+
+    // Rimuovi marker precedenti
+    itineraryMarkers.forEach(m => itineraryMap.removeLayer(m));
+    itineraryMarkers = [];
+
+    let bounds = [];
+
+    // Tipo filtrato nella sidebar
+    const typeFilter = document.querySelector('input[name="typeFilter"]:checked')?.value || "all";
+
+    // Cicla gli elementi del giorno selezionato
+    const dayArea = document.getElementById(`day-${selectedDay}`);
+		if (!dayArea) return; // il giorno non esiste più
+
+		dayArea.querySelectorAll(".day-item").forEach(el => {
+
+        let title = el.querySelector("input").value;
+
+        let item = Object.values(data).flat().find(x => x.title === title);
+        if (!item) return;
+
+        // Identifica categoria dell’elemento
+        let type = Object.keys(data).find(k => data[k].some(x => x.title === title));
+
+        // La mappa dell’itinerario mostra SOLO attività e strutture
+        if (type === "places" || type === "transport") return;
+
+        // Applicazione filtro utente
+        if (typeFilter !== "all" && type !== typeFilter) return;
+
+        // Icona corretta
+        let ic = pins[type];
+        if (item.bought) ic = pins.purchased;
+
+        // Aggiungi marker
+        let mk = L.marker([item.lat, item.lon], { icon: ic }).addTo(itineraryMap);
+        mk.bindPopup(`<b>${item.title}</b><br>${item.desc}`);
+        itineraryMarkers.push(mk);
+
+        bounds.push([item.lat, item.lon]);
+    });
+
+    // Adatta viewport
+    if (bounds.length > 0) {
+        itineraryMap.fitBounds(bounds, { padding: [40, 40] });
+    }
+}
+
+
+/* ============================================================
+   SIDEBAR DEI GIORNI PER LA MAPPA ITINERARIO
+   ============================================================ */
+
+function buildDaySidebar() {
+    let html = "";
+
+    // Conta i giorni realmente presenti nell'itinerario
+    const dayBoxes = document.querySelectorAll(".day-box");
+    const totalDays = dayBoxes.length;
+
+    for (let i = 1; i <= totalDays; i++) {
+        html += `
+            <div style="padding:6px 0; cursor:pointer;"
+                 onclick="selectedDay=${i}; renderItineraryPins();">
+                ➤ Giorno ${i}
+            </div>
+        `;
+    }
+
+    document.getElementById("dayFilterList").innerHTML = html;
+
+    // Safety: se il selectedDay supera i giorni disponibili, riportalo a 1
+    if (selectedDay > totalDays) {
+        selectedDay = 1;
+    }
+}
+
+
+
+/* ============================================================
+   ANTEPRIMA PREVENTIVO
+   ============================================================ */
+
+previewBtn.onclick = openPreview;
+
+/* Apertura modale anteprima */
+function openPreview() {
+    renderPreview();
+    document.getElementById("previewModal").style.display = "flex";
+}
+
+/* Chiudi anteprima */
+function closePreview() {
+    document.getElementById("previewModal").style.display = "none";
+}
+
+/* Render contenuto anteprima */
+function renderPreview() {
+
+    let html = "";
+
+    for (let d = 1; d <= 10; d++) {
+
+        const items = document.querySelectorAll(`#day-${d} .day-item`);
+        if (items.length === 0) continue;
+
+        const dateText = document
+            .querySelector(`#day-${d}`)
+            .parentElement
+            .querySelector(".day-title")
+            .textContent;
+
+        html += `
+            <h3 style="margin-top:20px; margin-bottom:5px;">${dateText}</h3>
+            <div style="padding-left:10px;">
+        `;
+
+        items.forEach(el => {
+
+            let title = el.querySelector("input").value;
+            let desc = el.querySelector("textarea").value;
+
+            html += `
+                <div style="margin-bottom:8px;">
+                    • <strong>${title}</strong><br>
+                    <span style="color:#555;">${desc}</span>
+                </div>
+            `;
+        });
+
+        html += "</div>";
+    }
+
+    // Nessun elemento
+    if (html.trim() === "") {
+        html = "<p>Nessun servizio inserito nell’itinerario.</p>";
+    }
+
+    document.getElementById("previewContent").innerHTML = html;
+}
+
+
+/* ============================================================
+   COLLASSA SEZIONE FILTRI DEL CATALOGO
+   ============================================================ */
+
+toggleFiltersBtn.onclick = () => {
+    filtersArea.classList.toggle("collapsed");
+    toggleFiltersBtn.textContent =
+        filtersArea.classList.contains("collapsed") ? "⬇️" : "⬆️";
+};
+
+
+</script>
+
+</body>
+</html>
 
