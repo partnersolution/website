@@ -748,30 +748,41 @@ function buildItinerary() {
     itinerary.innerHTML = "";
 
     // Se l'utente non seleziona data → usa quella odierna
-    let start = document.getElementById("startDate").value
-        ? new Date(document.getElementById("startDate").value)
-        : new Date();
+	let startInput = document.getElementById("startDate").value;
+	let start = startInput ? new Date(startInput) : null;
+
 
     let days = parseInt(document.getElementById("numDays").value) || 10;
 
     for (let i = 1; i <= days; i++) {
 
         // Calcolo data giorno i
-        let d = new Date(start);
-        d.setDate(start.getDate() + (i - 1));
+		let d = null;
+
+		if (start) {
+			// Se l'utente ha scelto una data, calcoliamo quella corretta
+			d = new Date(start);
+			d.setDate(start.getDate() + (i - 1));
+		}
+
 
         // Struttura contenitore del giorno
         let box = document.createElement("div");
         box.className = "day-box";
 
-        box.innerHTML = `
-            <div class='day-title'>
-                Giorno ${i} – ${d.toISOString().split("T")[0]}
-                <span class="day-icons" id="day-icons-${i}" style="margin-left:10px;"></span>
-            </div>
+		const label = d
+			? `Giorno ${i} – ${d.toISOString().split("T")[0]}`
+			: `Giorno ${i}`;
 
-            <div class='drop-area' id='day-${i}'></div>
-        `;
+
+		box.innerHTML = `
+		  <div class='day-title'>
+			${label}
+			<span class="day-icons" id="day-icons-${i}" style="margin-left:10px;"></span>
+		  </div>
+		  <div class='drop-area' id='day-${i}'></div>
+		`;
+
 
         itinerary.appendChild(box);
 
@@ -1280,4 +1291,3 @@ toggleFiltersBtn.onclick = () => {
 
 </body>
 </html>
-
