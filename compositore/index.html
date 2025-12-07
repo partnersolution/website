@@ -10,11 +10,6 @@
 
     <!-- SortableJS (drag & drop cross-list) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/plugins/Swap/Sortable.swap.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/plugins/OnSpill/Sortable.onSpill.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/plugins/MultiDrag/Sortable.multiDrag.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/plugins/TouchDrag/Sortable.touchDrag.js"></script>
-
 
     <!-- CSS verrà inserito nel blocco 2 -->
     <style>
@@ -861,20 +856,11 @@ function buildItinerary() {
         });
 
         // Drag & drop tra giorni diversi
-
-		
-		Sortable.create(drop, {
-		  animation: 150,
-		  group: "itinerary",
-		  onSort: () => updateDayIcons(i),
-
-		  // 🔥 Abilita drag su mobile
-		  fallbackOnBody: true,
-		  fallbackTolerance: 5,
-		  touchStartThreshold: 0
-		});
-
-		
+        Sortable.create(drop, {
+            animation: 150,
+            group: "itinerary",
+            onSort: () => updateDayIcons(i)
+        });
 
         updateDayIcons(i);
     }
