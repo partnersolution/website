@@ -249,6 +249,8 @@
 		}
 	}
 
+
+
     </style>
 </head>
 
@@ -510,6 +512,9 @@
      JAVASCRIPT (inserito nei prossimi blocchi)
      ============================================================ -->
 <script>
+
+
+
 /* BLOCCO 3 COMPLETO COMMENTATO */
 
 /* ============================================================
@@ -742,8 +747,25 @@ function render() {
 /* ============================================================
    COSTRUZIONE ITINERARIO (lista giorni)
    ============================================================ */
+function formattaDataGGMMYYYY(date) {
+  const gg = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  return `${gg}/${mm}/${yyyy}`;
+}
 
 function buildItinerary() {
+
+	const giorniSettimana = [
+	  "Domenica",
+	  "Lunedì",
+	  "Martedì",
+	  "Mercoledì",
+	  "Giovedì",
+	  "Venerdì",
+	  "Sabato"
+	];
+
 
     itinerary.innerHTML = "";
 
@@ -770,9 +792,16 @@ function buildItinerary() {
         let box = document.createElement("div");
         box.className = "day-box";
 
-		const label = d
-			? `Giorno ${i} – ${d.toISOString().split("T")[0]}`
-			: `Giorno ${i}`;
+		let label;
+
+		if (start) {
+			const dataFormattata = formattaDataGGMMYYYY(d);
+			const nomeGiorno = giorniSettimana[d.getDay()];
+			label = `Giorno ${i} – ${dataFormattata} ${nomeGiorno}`;
+		} else {
+			label = `Giorno ${i}`;
+		}
+
 
 
 		box.innerHTML = `
