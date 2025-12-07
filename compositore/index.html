@@ -242,20 +242,12 @@
 		}
 	}
 
-	@media (max-width: 768px) {
-	  .result-card {
-		cursor: default !important;
-	  }
-	  .add-mobile-btn {
-		background:#0077ff;
-		color:white;
-		border:none;
-		border-radius:6px;
-		padding:6px 10px;
-		font-size:16px;
-	  }
+	@media (max-width: 700px) {
+		/* Nasconde sidebar su mobile */
+		#sidebarWrapper {
+			display: none;
+		}
 	}
-
 
 
 
@@ -514,40 +506,6 @@
     </div>
 </div>
 
-<div id="mobileAddPanel" 
-     style="
-       position: fixed;
-       bottom: -300px;
-       left: 0;
-       right: 0;
-       background: white;
-       border-top-left-radius: 16px;
-       border-top-right-radius: 16px;
-       box-shadow: 0 -2px 12px rgba(0,0,0,0.2);
-       padding: 20px;
-       transition: bottom .3s;
-       z-index: 99999;
-     ">
-  
-  <h3 style="margin-top:0;">Aggiungi all'itinerario</h3>
-
-  <div id="mobileAddTitle" style="font-weight:600;"></div>
-  <div id="mobileAddDesc" style="margin-bottom:15px;"></div>
-
-  <label>Seleziona il giorno</label>
-  <select id="mobileAddDay" style="width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;margin-top:8px;margin-bottom:15px;"></select>
-
-  <button onclick="confirmMobileAdd()" 
-          style="width:100%;padding:12px;background:#0077ff;color:white;border:none;border-radius:6px;font-size:16px;">
-    ➕ Aggiungi
-  </button>
-
-  <button onclick="closeMobileAddPanel()" 
-          style="margin-top:10px;width:100%;padding:10px;background:#ccc;border:none;border-radius:6px;">
-    Annulla
-  </button>
-
-</div>
 
 
 <!-- ============================================================
@@ -763,24 +721,15 @@ function render() {
             el.className = "result-card";
             el.draggable = true;
 
-		el.innerHTML = `
-		  ${ribbon(item)}
-		  ${icon(typeOfItem)}
-		  <div style="flex:1">
-			<strong>${item.title}</strong><br>
-			${item.desc}<br>
-			<small>${item.destination} • ${item.supplier}</small>
-		  </div>
-
-		  ${
-			isMobile()
-			? `<button class="add-mobile-btn" onclick="openMobileAddPanel('${item.title}','${item.desc}')">
-				 ➕
-			   </button>`
-			: ``
-		  }
-		`;
-
+            el.innerHTML = `
+                ${ribbon(item)}
+                ${icon(typeOfItem)}
+                <div>
+                    <strong>${item.title}</strong><br>
+                    ${item.desc}<br>
+                    <small>${item.destination} • ${item.supplier}</small>
+                </div>
+            `;
 
             // Drag & drop verso l'itinerario
             el.addEventListener("dragstart", e => {
@@ -792,8 +741,6 @@ function render() {
             results.appendChild(el);
         });
 }
-
-window.render = render;
 
 
 
@@ -850,7 +797,7 @@ function buildItinerary() {
 		if (start) {
 			const dataFormattata = formattaDataGGMMYYYY(d);
 			const nomeGiorno = giorniSettimana[d.getDay()];
-			label = `Giorno ${i} – ${dataFormattata} ${nomeGiorno}`;
+			label = `Giorno ${i} – ${dataFormattata} `;
 		} else {
 			label = `Giorno ${i}`;
 		}
@@ -1357,58 +1304,6 @@ function renderPreview() {
     document.getElementById("previewContent").innerHTML = html;
 }
 
-let mobilePendingItem = null;
-
-function openMobileAddPanel(title, desc) {
-  mobilePendingItem = { title, desc };
-
-  document.getElementById("mobileAddTitle").innerText = title;
-  document.getElementById("mobileAddDesc").innerText = desc;
-
-  let select = document.getElementById("mobileAddDay");
-  select.innerHTML = "";
-
-  let days = document.querySelectorAll(".day-box").length;
-
-  for (let i = 1; i <= days; i++) {
-    let label = document.querySelector(`#day-${i}`).parentElement.querySelector(".day-title").innerText;
-    select.innerHTML += `<option value="${i}">${label}</option>`;
-  }
-
-  document.getElementById("mobileAddPanel").style.bottom = "0px";
-}
-
-function closeMobileAddPanel() {
-  document.getElementById("mobileAddPanel").style.bottom = "-350px";
-}
-
-function confirmMobileAdd() {
-  let g = document.getElementById("mobileAddDay").value;
-  let drop = document.getElementById(`day-${g}`);
-
-  let el = document.createElement("div");
-  el.className = "day-item";
-
-  el.innerHTML = `
-    <input value='${mobilePendingItem.title}'>
-    <textarea rows='2'>${mobilePendingItem.desc}</textarea>
-    <button class="remove-btn">✕</button>
-  `;
-
-  drop.appendChild(el);
-
-  insertedTitles.add(mobilePendingItem.title);
-
-  el.querySelector(".remove-btn").onclick = () => {
-    el.remove();
-    removeFromItinerary(el, mobilePendingItem.title);
-    updateDayIcons(g);
-  };
-
-  updateDayIcons(g);
-  render();
-  closeMobileAddPanel();
-}
 
 /* ============================================================
    COLLASSA SEZIONE FILTRI DEL CATALOGO
@@ -1419,11 +1314,6 @@ toggleFiltersBtn.onclick = () => {
     toggleFiltersBtn.textContent =
         filtersArea.classList.contains("collapsed") ? "⬇️" : "⬆️";
 };
-
-function isMobile() {
-  return window.matchMedia("(max-width: 768px)").matches;
-}
-
 
 
 </script>
