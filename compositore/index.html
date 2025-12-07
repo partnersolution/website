@@ -162,6 +162,7 @@
 		padding: 6px;
 		border-radius: 6px;
 		background: #fafafa;
+		touch-action: none;
 	}
 
 	.day-item {
@@ -857,10 +858,17 @@ function buildItinerary() {
 
         // Drag & drop tra giorni diversi
         Sortable.create(drop, {
-            animation: 150,
-            group: "itinerary",
-            onSort: () => updateDayIcons(i)
-        });
+		  animation: 150,
+		  group: "itinerary",
+
+		  // ❤️ MOBILE SUPPORT
+		  fallbackOnBody: true,        // abilita fallback su mobile
+		  fallbackTolerance: 5,        // migliora la presa del trascinamento
+		  touchStartThreshold: 0,      // 0 = reattivo al 100% sui device touch
+
+		  onSort: () => updateDayIcons(i)
+		});
+
 
         updateDayIcons(i);
     }
