@@ -793,10 +793,8 @@ function render() {
         });
 }
 
-// 🔄 Ricontrolla la UI quando cambia la misura dello schermo
-window.addEventListener("resize", () => {
-  render(); // riesegue la stampa dei risultati adattandoli alle dimensioni
-});
+window.render = render;
+
 
 
 /* ============================================================
@@ -1423,8 +1421,9 @@ toggleFiltersBtn.onclick = () => {
 };
 
 function isMobile() {
-  return window.innerWidth <= 768; // puoi modificare la soglia
+  return window.matchMedia("(max-width: 768px)").matches;
 }
+
 
 
 </script>
