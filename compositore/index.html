@@ -287,6 +287,31 @@
 			border-radius: 4px;
 		}
 
+		.img-btn {
+			background: #3498db;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			border-radius: 6px;
+			cursor: pointer;
+			margin-top: 6px;
+		}
+
+		.img-gallery {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			margin-top: 6px;
+		}
+
+		.detail-img {
+			width: 80px;
+			height: 80px;
+			object-fit: cover;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+		}
+
 		</style>
 	</head>
 
@@ -914,12 +939,47 @@
 
 				di.innerHTML = `
 					<input value='${t}'>
+
 					<textarea rows='2'>${desc}</textarea>
 
 					${extraFields}
 
+				<div class="images-area" style="margin-top:8px;">
+						<button class="add-image-btn"
+								style="
+								margin-bottom:6px;
+								background:#007bff;
+								border:none;
+								padding:6px 10px;
+								border-radius:6px;
+								cursor:pointer;
+								color:white;
+								font-size:13px;
+								font-weight:600;
+								display:inline-flex;
+								align-items:center;
+								gap:6px;
+							">
+							➕ Aggiungi immagini
+						</button>
+
+						<div class="img-container"></div>
+					</div>
+
 					<button class="remove-btn">✕</button>
 				`;
+				
+				const addImgBtn = di.querySelector(".add-image-btn");
+				const imgContainer = di.querySelector(".img-container");
+
+				addImgBtn.onclick = () => {
+					let input = document.createElement("input");
+					input.type = "file";
+					input.accept = "image/*";
+					input.onchange = e => handleImageUpload(e, imgContainer);
+					input.click();
+				};
+
 
 
 					drop.appendChild(di);
@@ -1516,27 +1576,47 @@ drop.addEventListener("drop", e => {
         // --- Stampa i dettagli ---
         items.forEach(el => {
 
-            let title = el.querySelector("input")?.value || "";
+            let title = el.querySelector(".title-field")?.value ||
+                        el.querySelector("input")?.value || "";
+
             let desc = el.querySelector("textarea")?.value || "";
 
             let start = el.querySelector(".start-time")?.value || "";
             let end   = el.querySelector(".end-time")?.value || "";
             let dur   = el.querySelector(".duration")?.value || "";
 
+            // 🎯 ORARI / DURATA
             let timeInfo = "";
-
+            
             if (start && end) {
                 timeInfo = `<div style="color:#0077ff;">⏱ ${start} → ${end}</div>`;
             }
             else if (dur) {
-                timeInfo = `<div style="color:#0077ff;">⏱ Durata: ${dur} min</div>`;
+                timeInfo = `<div style="color:#0077ff;">⏱ Durata: ${dur}</div>`;
+            }
+
+            // 🎯 IMMAGINI
+            let imgs = el.querySelectorAll(".detail-img");
+            let imgHtml = "";
+
+            if (imgs.length > 0) {
+                imgHtml += `<div style="margin-top:6px;">`;
+                imgs.forEach(im => {
+                    imgHtml += `
+                        <img src="${im.src}"
+                             style="width:80px; height:80px; object-fit:cover;
+                                    border-radius:6px; margin-right:6px;">
+                    `;
+                });
+                imgHtml += `</div>`;
             }
 
             html += `
-                <div style="margin-bottom:8px;">
+                <div style="margin-bottom:12px;">
                     • <strong>${title}</strong><br>
                     <span style="color:#555;">${desc}</span>
                     ${timeInfo}
+                    ${imgHtml}
                 </div>
             `;
         });
@@ -1544,12 +1624,13 @@ drop.addEventListener("drop", e => {
         html += `</div>`;
     });
 
-		if (html.trim() === "") {
-			html = "<p>Nessun servizio inserito nell’itinerario.</p>";
-		}
+    if (html.trim() === "") {
+        html = "<p>Nessun servizio inserito nell’itinerario.</p>";
+    }
 
-		document.getElementById("previewContent").innerHTML = html;
-	}
+    document.getElementById("previewContent").innerHTML = html;
+}
+
 
 
 
@@ -1632,6 +1713,83 @@ function renumberDays() {
 
     // ristabilisce gli handler
     attachDayDeleteHandlers();
+}
+
+document.addEventListener("click", function(e) {
+
+    // Se clicco su un pulsante immagini
+    if (e.target.classList.contains("img-btn")) {
+
+        const dayItem = e.target.closest(".day-item");
+        const gallery = dayItem.querySelector(".img-gallery");
+
+        // Crea input file “nascosto”
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.multiple = true;
+        input.style.display = "none";
+
+        input.onchange = (ev) => {
+            const files = Array.from(ev.target.files);
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const img = document.createElement("img");
+                    img.src = reader.result;
+                    img.className = "detail-img";
+                    gallery.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        // Attiva finestra upload
+        input.click();
+    }
+});
+
+function handleImageUpload(e, imgContainer) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const src = ev.target.result;
+
+        // CREA IL WRAPPER (contenitore immagine + X)
+        let wrapper = document.createElement("div");
+        wrapper.className = "img-wrapper";
+        wrapper.style.display = "inline-block";
+        wrapper.style.position = "relative";
+        wrapper.style.marginRight = "6px";
+
+        wrapper.innerHTML = `
+            <img src="${src}" class="detail-img"
+                 style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
+            <div class="delete-img"
+                 style="
+                    position:absolute;
+                    top:-6px; right:-6px;
+                    background:#e74c3c; color:white;
+                    width:20px; height:20px;
+                    line-height:20px; text-align:center;
+                    border-radius:50%; cursor:pointer;
+                 ">
+                 ✕
+            </div>
+        `;
+
+        // RIMOZIONE IMMAGINE
+        wrapper.querySelector(".delete-img").onclick = () => {
+            wrapper.remove();
+        };
+
+        imgContainer.appendChild(wrapper);
+    };
+
+    reader.readAsDataURL(file);
 }
 
 	</script>
