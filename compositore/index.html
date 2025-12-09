@@ -180,7 +180,6 @@
 			margin-bottom: 4px;
 			border-radius: 4px;
 			border: 1px solid #ccc;
-			pointer-events: none;
 		}
 
 		/* Pulsante rimozione da un giorno dell’itinerario */
@@ -242,6 +241,50 @@
 				width: 300px;
 				min-width: 300px;
 			}
+		}
+		
+		.day-title-input {
+			font-size: 18px;
+			font-weight: 700;
+			border: none;
+			background: transparent;
+			width: 90%;
+			margin-bottom: 6px;
+		}
+		.day-title-input:focus {
+			outline: 2px solid #0077ff;
+			border-radius: 4px;
+			background: #eef6ff;
+		}
+
+		.time-block {
+			margin-top: 8px;
+			padding: 6px;
+			background: #f7f7f7;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
+
+		.time-block label {
+			display:block;
+			font-weight:600;
+			margin-top:6px;
+		}
+
+		.time-inline {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 8px;
+			margin-top: 6px;
+			font-size: 13px;
+			opacity: 0.9;
+		}
+
+		.time-inline input {
+			padding: 3px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
 		}
 
 		</style>
@@ -375,8 +418,18 @@
 			</button>
 		</div>
 
+		<!-- Pulsante aggiungi giorno -->
+		<div style="padding:15px;">
+			<button id="addDayBtn"
+				style="background:#27ae60; color:white; border:none; padding:10px 14px;
+					   border-radius:6px; cursor:pointer; font-size:15px;">
+				➕ Aggiungi giorno
+			</button>
+		</div>
+
 		<!-- Contenitore giorni -->
 		<div id="itinerary"></div>
+
 	</div>
 
 
@@ -799,11 +852,19 @@
 
 			box.innerHTML = `
 			  <div class='day-title'>
-				${label}
+				<input class="day-title-input" value="${label}" id="day-title-${i}">
 				<span class="day-icons" id="day-icons-${i}" style="margin-left:10px;"></span>
+
+				<button class="delete-day-btn" data-day="${i}"
+					style="float:right; background:#e74c3c; color:white; border:none;
+						   padding:4px 8px; border-radius:4px; cursor:pointer;">
+					🗑
+				</button>
 			  </div>
+
 			  <div class='drop-area' id='day-${i}'></div>
 			`;
+
 
 
 			itinerary.appendChild(box);
@@ -812,6 +873,8 @@
 
 			// Permette il drop
 			drop.addEventListener("dragover", e => e.preventDefault());
+			
+			
 
 			/* Gestione drop da catalogo */
 			drop.addEventListener("drop", e => {
@@ -825,11 +888,39 @@
 					let di = document.createElement("div");
 					di.className = "day-item";
 
-					di.innerHTML = `
-						<input value='${t}'>
-						<textarea rows='2'>${desc}</textarea>
-						<button class="remove-btn">✕</button>
-					`;
+				let type = Object.keys(data).find(k => data[k].some(x => x.title === t));
+
+				let extraFields = "";
+
+				if (type === "activities") {
+					extraFields = `
+					<div class="time-inline">
+						⏱ 
+						<label>Inizio</label>
+						<input type="time" class="start-time">
+
+						<label>Fine</label>
+						<input type="time" class="end-time">
+
+						<label>Durata</label>
+						<input type="number" class="duration">
+						
+						<label>Note</label>
+						<input type="text">						
+					</div>
+				`;
+				}
+				
+
+				di.innerHTML = `
+					<input value='${t}'>
+					<textarea rows='2'>${desc}</textarea>
+
+					${extraFields}
+
+					<button class="remove-btn">✕</button>
+				`;
+
 
 					drop.appendChild(di);
 
@@ -865,11 +956,110 @@
 
 
 			updateDayIcons(i);
+			
+			attachDayDeleteHandlers();
 		}
 	}
 
 	/* Pulsante "Applica" rigenera l'itinerario */
 	applyItinerarySettings.onclick = () => buildItinerary();
+	
+	// Aggiungi un nuovo giorno all'itinerario esistente
+	document.getElementById("addDayBtn").onclick = () => {
+    const itinerary = document.getElementById("itinerary");
+    const totalDays = itinerary.querySelectorAll(".day-box").length;
+
+    const newDay = totalDays + 1;
+
+    // Calcolo data se presente startDate
+    let startInput = document.getElementById("startDate").value;
+    let dayLabel = `Giorno ${newDay}`;
+
+    if (startInput) {
+        let start = new Date(startInput);
+        let newDate = new Date(start);
+        newDate.setDate(start.getDate() + (newDay - 1));
+
+        const giorniSettimana = ["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+        const formatted = formattaDataGGMMYYYY(newDate);
+        const dow = giorniSettimana[newDate.getDay()];
+
+        dayLabel = `Giorno ${newDay} – ${formatted} – ${dow}`;
+    }
+
+    // Crea contenitore nuovo giorno
+    let box = document.createElement("div");
+    box.className = "day-box";
+
+    box.innerHTML = `
+      <div class='day-title'>
+        <input class="day-title-input" value="${dayLabel}" id="day-title-${newDay}">
+        <span class="day-icons" id="day-icons-${newDay}" style="margin-left:10px;"></span>
+
+        <button class="delete-day-btn" data-day="${newDay}"
+            style="float:right; background:#e74c3c; color:white; border:none;
+                   padding:4px 8px; border-radius:4px; cursor:pointer;">
+            🗑
+        </button>
+      </div>
+
+      <div class='drop-area' id='day-${newDay}'></div>
+    `;
+
+    itinerary.appendChild(box);
+
+    // Attiva drop e riordino anche sul nuovo giorno
+    const drop = document.getElementById(`day-${newDay}`);
+
+    drop.addEventListener("dragover", e => e.preventDefault());
+    Sortable.create(drop, {
+        animation: 150,
+        group: "itinerary",
+        forceFallback: true,
+        fallbackOnBody: true,
+        fallbackTolerance: 3,
+		
+		onSort: () => updateDayIcons(newDay)
+    });
+	
+drop.addEventListener("drop", e => {
+    e.preventDefault();
+
+    if (e.dataTransfer.getData("fromCatalog") === "true") {
+
+        const t = e.dataTransfer.getData("title");
+        const desc = e.dataTransfer.getData("desc");
+
+        let di = document.createElement("div");
+        di.className = "day-item";
+
+        di.innerHTML = `
+            <input value='${t}'>
+            <textarea rows='2'>${desc}</textarea>
+            <button class="remove-btn">✕</button>
+        `;
+
+        drop.appendChild(di);
+
+        // Marca come inserito
+        insertedTitles.add(t);
+
+        // Gestione rimozione
+        di.querySelector(".remove-btn").onclick = () => {
+            di.remove();
+            removeFromItinerary(di, t);
+            updateDayIcons(newDay);
+        };
+
+        updateDayIcons(newDay);
+        render();
+    }
+});
+	
+
+    attachDayDeleteHandlers();
+};
+
 
 
 	/* ============================================================
@@ -1106,11 +1296,34 @@
 		let el = document.createElement("div");
 		el.className = "day-item";
 
+		let type = Object.keys(data).find(k => data[k].some(x => x.title === item.title));
+
+		let extraFields = "";
+
+		if (type === "activities") {
+			extraFields = `
+				<div class="time-block">
+					<label>Ora inizio</label>
+					<input type="time" class="start-time">
+
+					<label>Ora fine</label>
+					<input type="time" class="end-time">
+
+					<label>Durata (minuti)</label>
+					<input type="number" class="duration" min="0">
+				</div>
+			`;
+		}
+
 		el.innerHTML = `
 			<input value='${item.title}'>
 			<textarea rows='2'>${item.desc}</textarea>
+
+			${extraFields}
+
 			<button class="remove-btn">✕</button>
 		`;
+
 
 		drop.appendChild(el);
 
@@ -1264,47 +1477,80 @@
 	/* Render contenuto anteprima */
 	function renderPreview() {
 
-		let html = "";
+    let html = "";
 
-		for (let d = 1; d <= 10; d++) {
+    // Trova tutti i giorni reali presenti nell’itinerario
+    const dayBoxes = document.querySelectorAll(".day-box");
 
-			const items = document.querySelectorAll(`#day-${d} .day-item`);
-			if (items.length === 0) continue;
+    dayBoxes.forEach(box => {
 
-			const dateText = document
-				.querySelector(`#day-${d}`)
-				.parentElement
-				.querySelector(".day-title")
-				.textContent;
+        // Titolo giorno (editabile)
+        const dayTitle = box.querySelector(".day-title-input")?.value ||
+                         box.querySelector(".day-title")?.textContent ||
+                         "Giorno";
 
-			html += `
-				<h3 style="margin-top:20px; margin-bottom:5px;">${dateText}</h3>
-				<div style="padding-left:10px;">
-			`;
+        // Area contenuti
+        const dropArea = box.querySelector(".drop-area");
+        if (!dropArea) return;
 
-			items.forEach(el => {
+        // Estrai day-items come array
+        let items = Array.from(dropArea.querySelectorAll(".day-item"));
 
-				let title = el.querySelector("input").value;
-				let desc = el.querySelector("textarea").value;
+        // Ordina per orario di inizio
+        items.sort((a, b) => {
+            let aStart = a.querySelector(".start-time")?.value || "";
+            let bStart = b.querySelector(".start-time")?.value || "";
 
-				html += `
-					<div style="margin-bottom:8px;">
-						• <strong>${title}</strong><br>
-						<span style="color:#555;">${desc}</span>
-					</div>
-				`;
-			});
+            if (aStart === "" && bStart === "") return 0;
+            if (aStart === "") return 1;
+            if (bStart === "") return -1;
+            return aStart.localeCompare(bStart);
+        });
 
-			html += "</div>";
-		}
+        if (items.length === 0) return;
 
-		// Nessun elemento
+        // --- Stampa il giorno ---
+        html += `<h3 style="margin-top:20px; margin-bottom:5px;">${dayTitle}</h3>`;
+        html += `<div style="padding-left:10px;">`;
+
+        // --- Stampa i dettagli ---
+        items.forEach(el => {
+
+            let title = el.querySelector("input")?.value || "";
+            let desc = el.querySelector("textarea")?.value || "";
+
+            let start = el.querySelector(".start-time")?.value || "";
+            let end   = el.querySelector(".end-time")?.value || "";
+            let dur   = el.querySelector(".duration")?.value || "";
+
+            let timeInfo = "";
+
+            if (start && end) {
+                timeInfo = `<div style="color:#0077ff;">⏱ ${start} → ${end}</div>`;
+            }
+            else if (dur) {
+                timeInfo = `<div style="color:#0077ff;">⏱ Durata: ${dur} min</div>`;
+            }
+
+            html += `
+                <div style="margin-bottom:8px;">
+                    • <strong>${title}</strong><br>
+                    <span style="color:#555;">${desc}</span>
+                    ${timeInfo}
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+    });
+
 		if (html.trim() === "") {
 			html = "<p>Nessun servizio inserito nell’itinerario.</p>";
 		}
 
 		document.getElementById("previewContent").innerHTML = html;
 	}
+
 
 
 	/* ============================================================
@@ -1317,6 +1563,76 @@
 			filtersArea.classList.contains("collapsed") ? "⬇️" : "⬆️";
 	};
 
+	function attachDayDeleteHandlers() {
+		document.querySelectorAll(".delete-day-btn").forEach(btn => {
+			btn.onclick = () => {
+				const day = parseInt(btn.dataset.day);
+				const box = document.querySelector(`.day-box:nth-child(${day})`);
+
+				if (!box) return;
+
+				if (!confirm(`Vuoi davvero eliminare il Giorno ${day}?`)) return;
+
+				// Rimuovi tutti gli item di questo giorno da insertedTitles
+				const items = box.querySelectorAll(".day-item input");
+				items.forEach(inp => {
+					const title = inp.value;
+
+					// Verifica se esiste in altri giorni
+					let stillPresent = false;
+
+					document.querySelectorAll(".day-item input").forEach(other => {
+						if (other !== inp && other.value === title) {
+							stillPresent = true;
+						}
+					});
+
+					if (!stillPresent) {
+						insertedTitles.delete(title);
+					}
+				});
+
+				// Aggiorna il catalogo
+				render();
+
+
+
+				box.remove();
+
+				renumberDays();
+			};
+		});
+	}
+
+function renumberDays() {
+    const boxes = document.querySelectorAll(".day-box");
+
+    boxes.forEach((box, index) => {
+        const newDay = index + 1;
+
+        // aggiorna ID drop-area
+        const drop = box.querySelector(".drop-area");
+        drop.id = `day-${newDay}`;
+
+        // aggiorna input titolo
+        const titleInput = box.querySelector(".day-title-input");
+
+        // se il titolo ha struttura base, riscrivi numero
+        if (titleInput.value.startsWith("Giorno ")) {
+            titleInput.value = titleInput.value.replace(/Giorno \d+/, `Giorno ${newDay}`);
+        }
+
+        // aggiorna icone
+        box.querySelector(".day-icons").id = `day-icons-${newDay}`;
+
+        // aggiorna bottone elimina
+        const btn = box.querySelector(".delete-day-btn");
+        btn.dataset.day = newDay;
+    });
+
+    // ristabilisce gli handler
+    attachDayDeleteHandlers();
+}
 
 	</script>
 
