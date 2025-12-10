@@ -441,6 +441,18 @@
 				style="flex:1; background:#f39c12; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-size:15px;">
 				📄 Anteprima
 			</button>
+			
+			<button id="saveBtn"
+				style="flex:1; background:#27ae60; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer;">
+				💾 Salva
+			</button>
+
+			<button id="loadBtn"
+				style="flex:1; background:#8e44ad; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer;">
+				📂 Carica
+			</button>
+
+			
 		</div>
 
 		<!-- Pulsante aggiungi giorno -->
@@ -626,7 +638,21 @@
 			{ id:"p17", title:"Reykjavik Blue Lagoon", desc:"Sorgente termale islandese.", destination:"Reykjavik", supplier:"-", lat:63.8804, lon:-22.4495 },
 			{ id:"p18", title:"Marrakech Medina", desc:"Mercati tradizionali marocchini.", destination:"Marrakech", supplier:"-", lat:31.6295, lon:-7.9811 },
 			{ id:"p19", title:"Roma Colosseo", desc:"Simbolo dell'antica Roma.", destination:"Roma", supplier:"-", lat:41.8902, lon:12.4922 },
-			{ id:"p20", title:"Firenze Duomo", desc:"Capolavoro rinascimentale.", destination:"Firenze", supplier:"-", lat:43.7731, lon:11.2560 }
+			{ id:"p20", title:"Firenze Duomo", desc:"Capolavoro rinascimentale.", destination:"Firenze", supplier:"-", lat:43.7731, lon:11.2560 },
+			{ id:"ma_p1", title:"Essaouira", desc:"Località marocchina", destination:"Marocco", supplier:"-", lat:31.5085, lon:-9.7595 },
+			{ id:"ma_p2", title:"Agafay", desc:"Deserto roccioso vicino a Marrakech", destination:"Marocco", supplier:"-", lat:31.3850, lon:-8.2590 },
+			{ id:"ma_p3", title:"Marrakech", desc:"Città imperiale del Marocco", destination:"Marocco", supplier:"-", lat:31.6295, lon:-7.9811 },
+			{ id:"ma_p4", title:"Ourika", desc:"Valle dell'Ourika", destination:"Marocco", supplier:"-", lat:31.2262, lon:-7.6736 },
+			{ id:"ma_p5", title:"Aït Ben Haddou", desc:"Ksar patrimonio UNESCO", destination:"Marocco", supplier:"-", lat:31.0470, lon:-7.1310 },
+			{ id:"ma_p6", title:"Skoura", desc:"Oasi e palmeti di Skoura", destination:"Marocco", supplier:"-", lat:31.0635, lon:-6.5324 },
+			{ id:"ma_p7", title:"Dades", desc:"Valle del Dadès", destination:"Marocco", supplier:"-", lat:31.3600, lon:-6.3100 },
+			{ id:"ma_p8", title:"Merzouga", desc:"Dune del Sahara", destination:"Marocco", supplier:"-", lat:31.0994, lon:-4.0116 },
+			{ id:"ma_p9", title:"Fes", desc:"Antica città imperiale", destination:"Marocco", supplier:"-", lat:34.0181, lon:-5.0078 },
+			{ id:"ma_p10", title:"Chefchaouen", desc:"La città blu", destination:"Marocco", supplier:"-", lat:35.1686, lon:-5.2636 },
+			{ id:"ma_p11", title:"Tangeri", desc:"Grande città del nord", destination:"Marocco", supplier:"-", lat:35.7595, lon:-5.8339 },
+			{ id:"ma_p12", title:"Cairo", desc:"Arrivo a Il Cairo, disbrigo delle formalità doganali, incontro con l’accompagnatore locale e trasferimento in albergo con un veicolo privato. Assegnazione delle camere, serata libera.", destination:"Egitto, Cairo", supplier:"-", lat:35.7595, lon:-5.8339 }
+			
+			
 		],
 
 		/* ---------------------------
@@ -645,7 +671,14 @@
 			{ id:"a10", title:"Escursione ghiacciai", desc:"Tour nella natura islandese.", destination:"Reykjavik", supplier:"Arctic Adventures", lat:64.1265, lon:-21.8174 },
 			{ id:"a11", title:"Hammam tradizionale", desc:"Percorso benessere arabo.", destination:"Marrakech", supplier:"Spa Medina", lat:31.63, lon:-7.98 },
 			{ id:"a12", title:"Tour Vaticano", desc:"Musei Vaticani + Cappella Sistina.", destination:"Roma", supplier:"Roma Guide", lat:41.9022, lon:12.4539 },
-			{ id:"a13", title:"Times Square", desc:"Times Square.", destination:"Roma", supplier:"New York", lat:41.9022, lon:12.4539 }
+			{ id:"a13", title:"Times Square", desc:"Times Square.", destination:"Roma", supplier:"New York", lat:41.9022, lon:12.4539 },
+			{ id:"a14", title:"Tour di El Fayoum e Wadi El Rayan - CAIRO", desc:"Dopo colazione, un veicolo privato ci porterà a Fayoum, a circa 95 km dal Cairo. Inizieremo il tour nell’area protetta di Wadi Hitan (Valle delle Balene), situata all’interno della riserva di Wadi El Rayan e riconosciuta dall’UNESCO come patrimonio mondiale per gli scheletri di balene risalenti a 40 milioni di anni fa. Proseguiremo verso le cascate di Wadi El Rayan, che si trovano in una depressione naturale nel deserto occidentale, 42 metri sotto il livello del mare. Arrivati a Fayoum, sarà possibile provare il sandboarding. Rientro in hotel nel pomeriggio, con tempo libero per la serata. Cena libera.", destination:"Egitto, Cairo", supplier:"Cairo Tours", lat:41.9022, lon:12.4539 },
+			{ id:"a14", title:"Tour privato del Grande Museo Egizio e Cittadella - CAIro", desc:"Dopo colazione, un veicolo privato ci condurrà al Grande Museo Egizio (GEM), situato vicino alle Piramidi di Giza. Il museo, all’avanguardia, racconta la ricca storia dell’Egitto. Progettato per ospitare oltre 100.000 reperti, esporrà per la prima volta insieme, da novembre 2025, l’intera collezione dei tesori del re Tutankhamon. Dopo la visita al museo, ci sarà tempo per esplorare la storica Cittadella di Salah El Din, dove potrai ammirare la magnifica Moschea di Mohamed Ali e godere di viste mozzafiato sul Cairo. Rientro in hotel nel pomeriggio, tempo libero per la sera. Cena libera.", destination:"Egitto, Cairo", supplier:"Cairo Tours", lat:41.9022, lon:12.4539 },
+			{ id:"a15", title:"Tour Piramidi di Giza, Menfi e Sakkara - CAIRO", desc:"Dopo colazione, un veicolo privato con una guida egittologa esperta ci porterà al “The Giza Plateau”, dove potrete ammirare l’iconico panorama delle grandi piramidi e della Sfinge. Successivamente, ci dirigeremo verso l’antica capitale di Menfi, sede di affascinanti statue e reperti, incluso il notevole colosso di Ramses II. Infine, esploreremo Saqqara, dove visiteremo la piramide a gradoni di Djoser, la più antica struttura in pietra su larga scala della storia. Rientro in hotel nel pomeriggio e tempo libero per la sera. Cena libera.", destination:"Egitto, Cairo", supplier:"Cairo Tours", lat:41.9022, lon:12.4539 },
+			{ id:"a15", title:"Scoperta del Vecchio Cairo", desc:"Dopo colazione, il nostro tour ci condurrà alla scoperta della storia della città, visitando alcuni dei suoi siti più iconici. Esploreremo la Sinagoga Ben Ezra, la Chiesa di Santa Barbara e la Chiesa di Abu Serga. Avremo tempo per passeggiare lungo “El Moez Le Din Allah”, una delle strade più antiche d’Egitto, che rappresenta il cuore storico del Cairo, con monumenti come Bab El Fetouh e Bab El Nasr su entrambi i lati. Proseguiremo verso il quartiere più antico della città, El Darb El Asfar, famoso per i suoi monumenti islamici. Infine, visiteremo i vivaci bazar di Khan El Khalili, noti per oggetti in ottone, rame, profumi, cuoio, argento, oro e antiquariato. A metà pomeriggio, trasferimento all’aeroporto.", destination:"Egitto, Cairo", supplier:"Cairo Tours", lat:41.9022, lon:12.4539 }
+			
+			
+			
 		],
 
 		/* ---------------------------
@@ -661,7 +694,19 @@
 			{ id:"s7", title:"Rio Copacabana Resort", desc:"Resort fronte mare.", destination:"Rio", supplier:"Tropical Resorts", lat:-22.9711, lon:-43.1822 },
 			{ id:"s8", title:"Iceland Glacier Lodge", desc:"Lodge nordico nel ghiaccio.", destination:"Reykjavik", supplier:"Nordic Stay", lat:64.13, lon:-21.82 },
 			{ id:"s9", title:"Riad Marrakech Rose", desc:"Riad tradizionale nella Medina.", destination:"Marrakech", supplier:"Riad Collection", lat:31.63, lon:-7.99 },
-			{ id:"s10", title:"Roma Boutique Hotel", desc:"Elegante boutique hotel.", destination:"Roma", supplier:"Roma Hotels", lat:41.90, lon:12.50 }
+			{ id:"s10", title:"Roma Boutique Hotel", desc:"Elegante boutique hotel.", destination:"Roma", supplier:"Roma Hotels", lat:41.90, lon:12.50 },
+			{ id:"ma_s1", title:"Le Jardin des Douars", desc:"Boutique hotel a Essaouira", destination:"Marocco", supplier:"Le Jardin des Douars", lat:31.5085, lon:-9.7595 },
+			{ id:"ma_s2", title:"Inara Camp", desc:"Luxury camp nel deserto di Agafay", destination:"Marocco", supplier:"Inara Camp", lat:31.3850, lon:-8.2590 },
+			{ id:"ma_s3", title:"Ksar Kasbah & Spa", desc:"Riad di charme a Marrakech", destination:"Marocco", supplier:"Ksar Kasbah", lat:31.6295, lon:-7.9811 },
+			{ id:"ma_s4", title:"Kasbah Africa", desc:"Eco-lodge nella valle dell’Ourika", destination:"Marocco", supplier:"Kasbah Africa", lat:31.2262, lon:-7.6736 },
+			{ id:"ma_s5", title:"Kasbah Tamsna", desc:"Kasbah tradizionale ad Aït Ben Haddou", destination:"Marocco", supplier:"Kasbah Tamsna", lat:31.0470, lon:-7.1310 },
+			{ id:"ma_s6", title:"L'Ma Lodge", desc:"Boutique lodge a Skoura", destination:"Marocco", supplier:"L'Ma Lodge", lat:31.0635, lon:-6.5324 },
+			{ id:"ma_s7", title:"Auberge Chez Pierre", desc:"Lodge nella valle del Dadès", destination:"Marocco", supplier:"Auberge Chez Pierre", lat:31.3600, lon:-6.3100 },
+			{ id:"ma_s8", title:"Luxury Traditional Tent Camp", desc:"Campo tendato tradizionale a Merzouga", destination:"Marocco", supplier:"Nomad Luxury Camp", lat:31.0994, lon:-4.0116 },
+			{ id:"ma_s9", title:"Dar Seffarine", desc:"Riad storico nel cuore di Fes", destination:"Marocco", supplier:"Dar Seffarine", lat:34.0181, lon:-5.0078 },
+			{ id:"ma_s10", title:"Dar Jasmine", desc:"Boutique hotel panoramico", destination:"Marocco", supplier:"Dar Jasmine", lat:35.1686, lon:-5.2636 },
+			{ id:"ma_s11", title:"Hotel 4 stelle ", desc:"Bed & Breakfast / Camera doppia", destination:"Egitto, Cairo", supplier:"Hotel generico 4 stelle", lat:35.1686, lon:-5.2636 }
+			
 		],
 
 		/* ---------------------------
@@ -677,7 +722,12 @@
 			{ id:"t7", title:"Bus Reykjavik Tour", desc:"Trasporto per escursioni.", destination:"Reykjavik", supplier:"Arctic Bus", lat:64.13, lon:-21.82 },
 			{ id:"t8", title:"Taxi Roma Aeroporto", desc:"Taxi ufficiale Roma FCO.", destination:"Roma", supplier:"Taxi Roma", lat:41.80, lon:12.2389 },
 			{ id:"t9", title:"Volo CDG-DXB", desc:"Parigi → Dubai.", destination:"Dubai", supplier:"Emirates", lat:48.8566, lon:2.3522 },
-			{ id:"t10", title:"Ferry Sydney Harbour", desc:"Traghetto panoramico.", destination:"Sydney", supplier:"Harbour Ferry", lat:-33.852, lon:151.211 }
+			{ id:"t10", title:"Ferry Sydney Harbour", desc:"Traghetto panoramico.", destination:"Sydney", supplier:"Harbour Ferry", lat:-33.852, lon:151.211 },
+			{ id:"t11", title:"Volo CAI-FCO", desc:"17:55 Cairo, Cairo International Airport --> 20:30 Rome, Leonardo da Vinci-Fiumicino Airport ", destination:"Italia, Roma", supplier:"Ita Airways", lat:-33.852, lon:151.211 },
+			{ id:"t12", title:"Volo FCO-FLR", desc:"21:45 Rome, Leonardo da Vinci-Fiumicino Airport --> 22:40 Florence, Amerigo Vespucci Airport", destination:"Italia, Firenze", supplier:"Ita Airways", lat:-33.852, lon:151.211 },
+			{ id:"t13", title:"Volo FLR-FCO", desc:"06:25 Florence, Amerigo Vespucci Airport --> 07;15 Rome, Leonardo da Vinci-Fiumicino Airport Cairo, Cairo International Airport", destination:"Italia, Roma", supplier:"Ita Airways", lat:-33.852, lon:151.211 },
+			{ id:"t14", title:"Volo FCO-CAI", desc:"12:40 Rome, Leonardo da Vinci-Fiumicino  --> 15:55 Airport Cairo, Cairo International Airport", destination:"Egitto, Cairo", supplier:"Ita Airways", lat:-33.852, lon:151.211 }
+			
 		]
 	};
 
@@ -1312,21 +1362,27 @@ drop.addEventListener("drop", e => {
 
 				<label>Giorno:</label>
 				<select id="daySelect-${item.id}">
-					${(() => {
-						// Conta i giorni reali presenti nell’itinerario
-						const dayBoxes = document.querySelectorAll(".day-box");
-						const totalDays = dayBoxes.length;
+					${
+						(() => {
+							// Trova tutti i giorni reali
+							const dayBoxes = document.querySelectorAll(".day-box");
 
-						if (totalDays === 0) {
-							// Caso: itinerario non ancora creato
-							return `<option value="">Nessun giorno disponibile</option>`;
-						}
+							return Array.from(dayBoxes).map((box, index) => {
 
-						return Array.from({ length: totalDays }, (_, i) =>
-							`<option value="${i + 1}">Giorno ${i + 1}</option>`
-						).join("");
-					})()}
+								const dayNumber = index + 1;
+
+								// Titolo personalizzato se presente
+								const customTitle =
+									box.querySelector(".day-title-input")?.value ||
+									`Giorno ${dayNumber}`;
+
+								return `<option value="${dayNumber}">${customTitle}</option>`;
+							}).join("");
+
+						})()
+					}
 				</select>
+
 
 
 				<button onclick='addFromMap("${item.id}")'
@@ -1500,28 +1556,34 @@ drop.addEventListener("drop", e => {
 	   ============================================================ */
 
 	function buildDaySidebar() {
+
+		const dayBoxes = document.querySelectorAll(".day-box");
 		let html = "";
 
-		// Conta i giorni realmente presenti nell'itinerario
-		const dayBoxes = document.querySelectorAll(".day-box");
-		const totalDays = dayBoxes.length;
+		dayBoxes.forEach((box, index) => {
 
-		for (let i = 1; i <= totalDays; i++) {
+			const dayNumber = index + 1;
+
+			// Legge il valore personalizzato del titolo
+			const customTitle =
+				box.querySelector(".day-title-input")?.value ||
+				`Giorno ${dayNumber}`;
+
 			html += `
 				<div style="padding:6px 0; cursor:pointer;"
-					 onclick="selectedDay=${i}; renderItineraryPins();">
-					➤ Giorno ${i}
+					 onclick="selectedDay=${dayNumber}; renderItineraryPins();">
+					➤ ${customTitle}
 				</div>
 			`;
-		}
+		});
 
 		document.getElementById("dayFilterList").innerHTML = html;
 
-		// Safety: se il selectedDay supera i giorni disponibili, riportalo a 1
-		if (selectedDay > totalDays) {
+		if (selectedDay > dayBoxes.length) {
 			selectedDay = 1;
 		}
 	}
+
 
 
 
@@ -1800,7 +1862,262 @@ function handleImageUpload(e, imgContainer) {
     reader.readAsDataURL(file);
 }
 
+function exportItinerary() {
+
+    let days = [];
+
+    const dayBoxes = document.querySelectorAll(".day-box");
+
+    dayBoxes.forEach((box, index) => {
+
+        const dayNumber = index + 1;
+
+        const title =
+            box.querySelector(".day-title-input")?.value ||
+            `Giorno ${dayNumber}`;
+
+        const items = [];
+
+        box.querySelectorAll(".day-item").forEach(el => {
+
+            items.push({
+                title: el.querySelector("input")?.value || "",
+                desc: el.querySelector("textarea")?.value || "",
+                start: el.querySelector(".start-time")?.value || "",
+                end:   el.querySelector(".end-time")?.value || "",
+                duration: el.querySelector(".duration")?.value || "",
+                images: Array.from(el.querySelectorAll(".img-thumb")).map(i => i.src)
+            });
+
+        });
+
+        days.push({
+            day: dayNumber,
+            title,
+            items
+        });
+    });
+
+    return { days };
+}
+
+document.getElementById("saveBtn").onclick = () => {
+
+    const title = prompt("Inserisci un titolo per il preventivo:");
+
+    if (!title || title.trim() === "") {
+        alert("Titolo non valido.");
+        return;
+    }
+
+    const itineraries = getSavedItineraries();
+
+    // Esporta l’itinerario
+    const json = exportItinerary();
+
+    // Salva
+    itineraries[title] = json;
+
+    saveItineraries(itineraries);
+
+    alert("Preventivo salvato come: " + title);
+};
+
+
+function loadItineraryFromJSON(json) {
+
+    itinerary.innerHTML = "";
+
+    json.days.forEach(day => {
+
+        const box = document.createElement("div");
+        box.className = "day-box";
+
+        box.innerHTML = `
+            <div class='day-title'>
+                <input class="day-title-input" value="${day.title}">
+                <span class="day-icons" id="day-icons-${day.day}"></span>
+
+                <button class="delete-day-btn" data-day="${day.day}"
+                        style="float:right; background:#e74c3c; color:white; border:none; padding:4px 8px; border-radius:4px;">
+                    🗑
+                </button>
+            </div>
+
+            <div class='drop-area' id='day-${day.day}'></div>
+        `;
+
+        itinerary.appendChild(box);
+
+        const drop = box.querySelector(".drop-area");
+
+        // Attiva drag&drop
+        Sortable.create(drop, {
+            animation: 150,
+            group: "itinerary",
+            forceFallback: true,
+            fallbackOnBody: true,
+            fallbackTolerance: 3,
+            onSort: () => updateDayIcons(day.day)
+        });
+
+        // Ricrea i dettagli del giorno
+        day.items.forEach(item => {
+            const el = document.createElement("div");
+            el.className = "day-item";
+
+            el.innerHTML = `
+                <input class="item-title" value="${item.title}">
+                <textarea class="item-desc" rows="2">${item.desc}</textarea>
+
+                <div class="time-row">
+                    <input type="time" class="start-time" value="${item.start}">
+                    <input type="time" class="end-time" value="${item.end}">
+                    <input type="number" class="duration" placeholder="Durata" value="${item.duration}">
+                </div>
+
+                <div class="images-area">
+                    ${item.images.map(src => `<img src="${src}" class="img-thumb">`).join("")}
+                </div>
+
+                <button class="remove-btn">✕</button>
+            `;
+
+            el.querySelector(".remove-btn").onclick = () => {
+                el.remove();
+                updateDayIcons(day.day);
+            };
+
+            drop.appendChild(el);
+        });
+
+        updateDayIcons(day.day);
+    });
+
+    attachDayDeleteHandlers();
+}
+
+document.getElementById("loadBtn").onclick = () => {
+
+    const saved = localStorage.getItem("savedItinerary");
+
+    if (!saved) {
+        alert("Nessun itinerario salvato.");
+        return;
+    }
+
+    const json = JSON.parse(saved);
+    loadItineraryFromJSON(json);
+
+    alert("Itinerario caricato!");
+};
+
+function getSavedItineraries() {
+    return JSON.parse(localStorage.getItem("savedItineraries") || "{}");
+}
+
+function saveItineraries(obj) {
+    localStorage.setItem("savedItineraries", JSON.stringify(obj));
+}
+
+
+document.getElementById("loadBtn").onclick = () => {
+    openLoadModal();
+};
+
+function openLoadModal() {
+    
+    const list = document.getElementById("loadList");
+    const modal = document.getElementById("loadModal");
+
+    const itineraries = getSavedItineraries();
+
+    list.innerHTML = "";
+
+    const titles = Object.keys(itineraries);
+
+    if (titles.length === 0) {
+        list.innerHTML = "<p>Nessun preventivo salvato.</p>";
+    }
+
+    titles.forEach(t => {
+
+        const row = document.createElement("div");
+        row.style = "display:flex; justify-content:space-between; margin-bottom:8px; padding:6px; background:#f5f5f5; border-radius:6px;";
+
+        row.innerHTML = `
+            <div>${t}</div>
+            <div>
+                <button onclick='loadThis("${t}")'
+                    style="background:#3498db; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
+                    Carica
+                </button>
+
+                <button onclick='deleteThis("${t}")'
+                    style="background:#e74c3c; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">
+                    Elimina
+                </button>
+            </div>
+        `;
+
+        list.appendChild(row);
+    });
+
+    modal.style.display = "flex";
+}
+
+function closeLoadModal() {
+    document.getElementById("loadModal").style.display = "none";
+}
+
+function loadThis(name) {
+
+    const itineraries = getSavedItineraries();
+
+    if (!itineraries[name]) {
+        alert("Preventivo non trovato.");
+        return;
+    }
+
+    loadItineraryFromJSON(itineraries[name]);
+
+    alert("Preventivo caricato: " + name);
+
+    closeLoadModal();
+}
+
+function deleteThis(name) {
+
+    if (!confirm("Vuoi davvero eliminare il preventivo: " + name + "?")) return;
+
+    const itineraries = getSavedItineraries();
+
+    delete itineraries[name];
+
+    saveItineraries(itineraries);
+
+    openLoadModal(); // Refresh lista
+}
+
+
 	</script>
+
+<div id="loadModal" 
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+            justify-content:center; align-items:center; z-index:99999;">
+    
+    <div style="background:white; width:400px; padding:20px; border-radius:10px;">
+
+        <h3>Carica un preventivo salvato</h3>
+
+        <div id="loadList" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div>
+
+        <button onclick="closeLoadModal()"
+            style="margin-top:15px; padding:8px 14px; border:none; background:#aaa; border-radius:6px; color:white;">
+            Chiudi
+        </button>
+    </div>
+</div>
 
 	</body>
 	</html>
