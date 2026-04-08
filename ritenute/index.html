@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestione Ritenute d’Acconto</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+<!-- HERO -->
+<section class="bg-[#feca16] text-black py-16 px-6 text-center">
+  <h1 class="text-4xl md:text-5xl font-bold mb-4">
+    Gestione Ritenute d’Acconto
+  </h1>
+  <p class="text-lg md:text-xl max-w-3xl mx-auto">
+    Flusso completo ADV ↔ Tour Operator: provvigioni, autofatture, ritenute e contabilizzazione integrata
+  </p>
+</section>
+
+<!-- INTRO -->
+<section class="py-12 px-6 max-w-5xl mx-auto text-center">
+  <p class="text-lg leading-relaxed">
+    La gestione delle ritenute d’acconto nel turismo richiede coerenza tra operatività,
+    flussi finanziari e contabilità. Il sistema integra tutte le fasi del processo,
+    garantendo allineamento tra ADV e Tour Operator.
+  </p>
+</section>
+
+<!-- ADV -->
+<section class="py-12 px-6 max-w-6xl mx-auto">
+  <h2 class="text-3xl font-bold mb-10 border-l-4 border-[#feca16] pl-4">
+    Implementazioni lato ADV
+  </h2>
+
+  <div class="grid md:grid-cols-2 gap-6">
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Configurazioni iniziali (Anagrafica azienda)</h3>
+      <p>
+        Gestione del tipo ritenuta default da proporre in fase di inserimento di quote/biglietti soggetti a commissioni attive (per il momento senza limiti
+        di importo minimo.
+      </p>
+    <img src="https://private-user-images.githubusercontent.com/19968752/575157962-49749a52-16e6-4883-a9cc-fde2ba9e95b2.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzU2Mzc2NDMsIm5iZiI6MTc3NTYzNzM0MywicGF0aCI6Ii8xOTk2ODc1Mi81NzUxNTc5NjItNDk3NDlhNTItMTZlNi00ODgzLWE5Y2MtZmRlMmJhOWU5NWIyLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA0MDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwNDA4VDA4MzU0M1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTMzOTllNjNkNDE4OWI5ZDJmMWQwYTI3ZmVhNTEzOTJjZjE2ODk0NDFiM2U3ZTA3NTJhYzIwYTIyNzI5NmFiYTAmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.S3wENLte46wSFewZYsLwk8jnFTAFV3LF-cybnRBX1rU" 
+         alt="Configurazione ritenuta" 
+         class="w-full h-48 object-cover rounded-xl shadow-sm" />
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Nuove informazioni in pratica</h3>
+      <p>
+        Introduzione di campi dedicati per provvigioni, base imponibile ritenuta, importo trattenuto e netto
+        da corrispondere al TO, con calcolo automatico.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Emissione fattura commissioni attive</h3>
+      <p>
+        Generazione automatica della fattura provvigionale con evidenza della ritenuta d’acconto
+        e integrazione con il processo di fatturazione elettronica.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Registrazione autofattura commissioni attive</h3>
+      <p>
+        Acquisizione e registrazione dell’autofattura emessa dal TO, con allineamento diretto
+        ai dati della pratica e alle provvigioni maturate.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Gestione pagamenti / Scadenze fornitore</h3>
+      <p>
+        Generazione delle scadenze verso il TO con calcolo automatico del netto da pagare,
+        tenendo conto di provvigioni e ritenuta.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Contabilizzazione fattura / autofattura</h3>
+      <p>
+        Registrazione automatica dei movimenti contabili: ricavi da provvigioni,
+        debiti verso TO e ritenute d’acconto.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- TO -->
+<section class="py-12 px-6 max-w-6xl mx-auto">
+  <h2 class="text-3xl font-bold mb-10 border-l-4 border-[#feca16] pl-4">
+    Implementazioni lato Tour Operator
+  </h2>
+
+  <div class="grid md:grid-cols-2 gap-6">
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Configurazioni iniziali (Anagrafiche ADV)</h3>
+      <p>
+        Gestione delle agenzie clienti con definizione delle condizioni provvigionali
+        e delle regole di emissione autofattura.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Nuove informazioni pratica</h3>
+      <p>
+        Evidenza delle provvigioni riconosciute all’ADV e del netto atteso,
+        con visibilità completa sui flussi economici.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Emissione autofattura commissioni passive</h3>
+      <p>
+        Generazione automatica dell’autofattura con collegamento diretto alla pratica
+        e alle provvigioni maturate.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <h3 class="font-semibold text-xl mb-3">Gestione incassi / Scadenze cliente</h3>
+      <p>
+        Gestione delle scadenze cliente e riconciliazione degli incassi
+        sulla base degli importi netti ricevuti dalle ADV.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="bg-gray-100 py-14 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-2xl font-bold mb-6">Flusso operativo integrato</h2>
+
+    <p class="leading-relaxed text-lg">
+      Il cliente effettua il pagamento all’ADV. L’ADV trattiene la provvigione,
+      applica la ritenuta d’acconto e versa al Tour Operator l’importo netto.
+      Il TO emette l’autofattura e il sistema gestisce automaticamente
+      contabilizzazione e riconciliazione tra le parti.
+    </p>
+  </div>
+</section>
+
+</body>
+</html>
